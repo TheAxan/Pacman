@@ -1,13 +1,24 @@
 import sys, pygame
+from math import pi
 pygame.init()
 
 screen = pygame.display.set_mode([1000, 1000])
 white = 255, 255, 255
+yellow = 255, 255, 0
+blue = 0, 0, 255
 black = 0, 0, 0
 
 pygame.draw.rect(screen, white, (200, 0, 600, 800), 3)
-# pygame.draw.rect(screen, black, (200+1, 0+1, 600-2, 800-2))
+
+pygame.draw.line(screen, blue, (460, 380), (540, 380))
+pygame.draw.line(screen, blue, (440, 419), (560, 419))
+
+pygame.draw.circle(screen, yellow, (500, 400), 18)
+pygame.draw.polygon(screen, black, ((500, 400), (481, 381), (481, 419)))
+
+
 pygame.display.flip()
+
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT: sys.exit()
