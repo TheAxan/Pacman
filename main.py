@@ -44,10 +44,6 @@ map_grid = [
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 ]
 
-for i in map_grid:      # print map
-    print(i)
-
-
 # map display
 
 size_mod = 3
@@ -65,7 +61,7 @@ for row in map_grid:
     x_counter = 0       # must be reset for each row
     for i in row:
         if i:
-            screen.blit(square, (x_counter * u, y_counter * u))     # draws square on the screen according to the map
+            screen.blit(square, (x_counter * u, y_counter * u))     # draws map
         x_counter += 1
     y_counter += 1
 
