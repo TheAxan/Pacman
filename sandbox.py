@@ -1,25 +1,32 @@
+# import random
+# import timeit
+# from statistics import mean
+#
+# r_list = random.choices((-2, 2), k=100)
+# print(mean(timeit.repeat('for i in r_list: x = i > 0', 'from sandbox import r_list', repeat=20))/100)
+# print(mean(timeit.repeat('for i in r_list: x = i == 2', 'from sandbox import r_list', repeat=20))/10    0)
+
+
 import pygame
 import sys
 pygame.init()
 
 # display tests
 
-# screen = pygame.display.set_mode([1000, 1000])
-# white = 255, 255, 255
-# yellow = 255, 255, 0
-# blue = 0, 0, 255
-# black = 0, 0, 0
-#
-# pygame.draw.rect(screen, white, (200, 0, 600, 800), 3)
-#
-# pygame.draw.line(screen, blue, (460, 380), (540, 380))
-# pygame.draw.line(screen, blue, (440, 419), (560, 419))
-#
-# pygame.draw.circle(screen, yellow, (500, 400), 18)
-# pygame.draw.polygon(screen, black, ((500, 400), (481, 381), (481, 419)))
-#
-#
-# pygame.display.flip()
+screen = pygame.display.set_mode([1000, 1000])
+white = 255, 255, 255
+yellow = 255, 255, 0
+blue = 0, 0, 255
+black = 0, 0, 0
+
+pygame.draw.rect(screen, white, (200, 0, 600, 800), 3)
+
+pygame.draw.line(screen, blue, (460, 380), (540, 380))
+pygame.draw.line(screen, blue, (440, 419), (560, 419))
+
+pygame.draw.circle(screen, yellow, (500, 400), 18)
+pygame.draw.polygon(screen, black, ((500, 400), (481, 381), (481, 419)))
+
 
 
 
