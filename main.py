@@ -39,8 +39,7 @@ map_grid = [
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 ]
 
-size_mod = 3
-u = 10 * size_mod       # 1 unit is 10 pixels * the size modifier
+u = 38      # 1 unit is 30 pixels by default (840x930), 38 for 1064x1178, 34 for 952x1054
 screen = pygame.display.set_mode((28 * u, 31 * u))
 
 # colors definition
