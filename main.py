@@ -85,7 +85,6 @@ clock = pygame.time.Clock()
 
 while True:
     # Update cell position
-    # could have 2 dicts instead?
     if direction[0] == -p_speed:
         pac_x = floor(pac_rect.x / u)
     elif direction[0] == p_speed:
