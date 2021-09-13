@@ -1,5 +1,6 @@
 import pygame
 import sys
+from math import floor, ceil
 
 
 pygame.init()
@@ -74,16 +75,38 @@ pac_rect = pac.get_rect()
 pac_rect.move_ip((14 * u, 23 * u))      # Set starting pos
 
 # Program definitions
-direction = (-2, 0)
+p_speed = u/15
+direction = (-p_speed, 0)
+pac_x = int(pac_rect.x / u)
+pac_y = int(pac_rect.y / u)
 
 clock = pygame.time.Clock()
 
 
 while True:
+    # Update cell position
+    # could have 2 dicts instead?
+    if direction[0] == -p_speed:
+        pac_x = floor(pac_rect.x / u)
+    elif direction[0] == p_speed:
+        pac_x = ceil(pac_rect.x / u)
+    if direction[1] == -p_speed:
+        pac_y = floor(pac_rect.y / u)
+    elif direction[1] == p_speed:
+        pac_y = ceil(pac_rect.y / u)
+
+    # Immobilizes and resets pos if cell ahead is a wall
+    if map_grid[pac_y][pac_x]:
+        direction = (0, 0)
+        pac_rect.x = round(pac_rect.x / u) * u
+        pac_rect.y = round(pac_rect.y / u) * u
+        pac_x = int(pac_rect.x / u)
+        pac_y = int(pac_rect.y / u)
+
     for event in pygame.event.get():
         if event.type == pygame.KEYDOWN:
-            direction = {pygame.K_LEFT: (-2, 0), pygame.K_UP: (0, -2),
-                         pygame.K_RIGHT: (2, 0), pygame.K_DOWN: (0, 2)}.get(event.key, direction)
+            direction = {pygame.K_LEFT: (-p_speed, 0), pygame.K_UP: (0, -p_speed),
+                         pygame.K_RIGHT: (p_speed, 0), pygame.K_DOWN: (0, p_speed)}.get(event.key, direction)
         elif event.type == pygame.QUIT:
             sys.exit()
 
