@@ -110,6 +110,7 @@ while True:
         pac_x = floor(pac_rect.x / u)
     elif movement[0] == p_speed:
         pac_x = ceil(pac_rect.x / u)
+
     elif movement[1] == -p_speed:
         pac_y = floor(pac_rect.y / u)
     elif movement[1] == p_speed:
@@ -129,3 +130,5 @@ while True:
 
     clock.tick(60)
     pygame.display.flip()
+
+    # End of while
