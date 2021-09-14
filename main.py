@@ -95,9 +95,8 @@ while True:
 
     # change movement to direction input on full squares
     if direction_input is not None and pac_x == pac_rect.x / u and pac_y == pac_rect.y / u:
-        # The (a + b * c / d) is to simplify (b * c / d) -> +or-1 to check the cell to turn to
-        if (map_grid[int(pac_y + direction_input[1] * p_speed_divider / u)]
-                    [int(pac_x + direction_input[0] * p_speed_divider / u)]) == 0:
+        if (map_grid[int(pac_y + direction_input[1] / p_speed)]
+                    [int(pac_x + direction_input[0] / p_speed)]) == 0:
             movement = direction_input
             direction_input = None
         else:
