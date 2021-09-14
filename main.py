@@ -96,8 +96,7 @@ while True:
     if pac_x == pac_rect.x / u and pac_y == pac_rect.y / u:
         movement = direction_input
 
-
-    # Move pac before cell update and wallcheck to prevent wall ramming
+    # Move pac before cell update and wall-check to prevent wall ramming
     pac_rect.move_ip(movement)
 
     # Update cell position
@@ -118,6 +117,7 @@ while True:
         pac_x = int(pac_rect.x / u)
         pac_y = int(pac_rect.y / u)
 
+    # Refresh screen
     screen.blit(background, (0, 0))
     screen.blit(pac, pac_rect)
 
