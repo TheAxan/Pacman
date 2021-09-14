@@ -76,7 +76,8 @@ pac_rect.move_ip((14 * u, 23 * u))      # Set starting pos
 
 # Program definitions
 p_speed = u/15
-direction = (-p_speed, 0)
+movement = (-p_speed, 0)
+direction_input = movement
 pac_x = int(pac_rect.x / u)
 pac_y = int(pac_rect.y / u)
 
@@ -84,32 +85,38 @@ clock = pygame.time.Clock()
 
 
 while True:
+    for event in pygame.event.get():
+        if event.type == pygame.KEYDOWN and event.key in (pygame.K_LEFT, pygame.K_UP, pygame.K_RIGHT, pygame.K_DOWN):
+            direction_input = {pygame.K_LEFT: (-p_speed, 0), pygame.K_UP: (0, -p_speed),
+                               pygame.K_RIGHT: (p_speed, 0), pygame.K_DOWN: (0, p_speed)}[event.key]
+        elif event.type == pygame.QUIT:
+            sys.exit()
+
+    # change movement to direction input on full squares
+    if pac_x == pac_rect.x / u and pac_y == pac_rect.y / u:
+        movement = direction_input
+
+
+    # Move pac before cell update and wallcheck to prevent wall ramming
+    pac_rect.move_ip(movement)
+
     # Update cell position
-    if direction[0] == -p_speed:
+    if movement[0] == -p_speed:
         pac_x = floor(pac_rect.x / u)
-    elif direction[0] == p_speed:
+    elif movement[0] == p_speed:
         pac_x = ceil(pac_rect.x / u)
-    if direction[1] == -p_speed:
+    elif movement[1] == -p_speed:
         pac_y = floor(pac_rect.y / u)
-    elif direction[1] == p_speed:
+    elif movement[1] == p_speed:
         pac_y = ceil(pac_rect.y / u)
 
     # Immobilizes and resets pos if cell ahead is a wall
     if map_grid[pac_y][pac_x]:
-        direction = (0, 0)
+        movement = (0, 0)
         pac_rect.x = round(pac_rect.x / u) * u
         pac_rect.y = round(pac_rect.y / u) * u
         pac_x = int(pac_rect.x / u)
         pac_y = int(pac_rect.y / u)
-
-    for event in pygame.event.get():
-        if event.type == pygame.KEYDOWN:
-            direction = {pygame.K_LEFT: (-p_speed, 0), pygame.K_UP: (0, -p_speed),
-                         pygame.K_RIGHT: (p_speed, 0), pygame.K_DOWN: (0, p_speed)}.get(event.key, direction)
-        elif event.type == pygame.QUIT:
-            sys.exit()
-
-    pac_rect.move_ip(direction)
 
     screen.blit(background, (0, 0))
     screen.blit(pac, pac_rect)
