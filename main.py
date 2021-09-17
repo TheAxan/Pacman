@@ -21,7 +21,7 @@ map_grid = [
     [0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 0, 0, 0, 0, 0],
     [1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1],
     [0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0, 0, 0, 0],
@@ -72,7 +72,9 @@ pac.set_colorkey(black)
 pygame.draw.circle(pac, yellow, (u/2, u/2), u/2)
 
 pac_rect = pac.get_rect()
-pac_rect.move_ip((14 * u, 23 * u))      # Set starting pos
+# Set starting pos
+pac_rect.x = 14 * u
+pac_rect.y = 23 * u
 
 # Program definitions
 p_speed_divider = 15
@@ -123,6 +125,13 @@ while True:
         pac_rect.y = round(pac_rect.y / u) * u
         pac_x = int(pac_rect.x / u)
         pac_y = int(pac_rect.y / u)
+
+    # Tunnel
+    if pac_y == 14:
+        if pac_x == -2:
+            pac_rect.x = 29 * u
+        elif pac_x == 29:
+            pac_rect.x = -2 * u
 
     # Refresh screen
     screen.blit(background, (0, 0))
