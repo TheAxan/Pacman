@@ -1,5 +1,5 @@
 import pygame
-import sys
+from sys import exit
 
 pygame.init()
 
@@ -75,9 +75,11 @@ class entity:
     def __init__(self, x, y, speed_divider, direction, color) -> None:
         self.surface = pygame.Surface((u, u))
         self.surface.set_colorkey(black)
+
         self.rect = self.surface.get_rect()
         self.rect.x = x * u
         self.rect.y = y * u
+
         self.x = x
         self.y = y
         self.speed = u / speed_divider
@@ -137,11 +139,13 @@ while True:
                     pygame.K_RIGHT: (pac.speed, 0),
                     pygame.K_DOWN: (0, pac.speed),
                 }[event.key]
+            elif event.key is pygame.K_ESCAPE:
+                exit()
             elif event.key in ():
                 pass
         
         elif event.type == pygame.QUIT:
-            sys.exit()
+            exit()
 
     
     if pac.x == pac.rect.x / u and pac.y == pac.rect.y / u:     # on full squares
