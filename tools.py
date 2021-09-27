@@ -39,7 +39,7 @@ def corner_finder(map):
         x_counter = 0
         new_row = []
         for cell in row:
-            if cell:
+            if cell == 1:
                 new_row.append(cell)
             else:
                 try:
@@ -60,8 +60,12 @@ def corner_finder(map):
             x_counter += 1
         new_map.append(tuple(new_row))
         y_counter += 1
+    return new_map
 
-    for row in new_map:
+def print_array(array):
+    for row in array:
         print(str(row) + ',')
 
-corner_finder(original_map)
+def create_empty_array(width, height):
+    map_array = tuple(tuple(0 for _ in range(width)) for _ in range(height))  # create empty array
+    return map_array
