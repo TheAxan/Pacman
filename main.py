@@ -69,15 +69,15 @@ pygame.draw.rect(square, dark_grey, (0, 0, u, u), 10)       # This is to identif
 y_counter = 0
 for row in map_grid:
     x_counter = 0
-    for i in row:
-        if i:
+    for cell in row:
+        if cell:
             background.blit(square, (x_counter * u, y_counter * u))     # This draws the map
         x_counter += 1
     y_counter += 1
 
 
 class entity:
-    def __init__(self, x, y, speed_divider, direction, color) -> None:
+    def __init__(self, x, y, speed_divider, original_direction) -> None:
         self.surface = pygame.Surface((u, u))
         self.surface.set_colorkey(black)
 
@@ -93,7 +93,7 @@ class entity:
             'up': (0, -self.speed),
             'right': (self.speed, 0),
             'down': (0, self.speed),
-        }[direction]
+        }[original_direction]
 
     
     def update_pos(self):
@@ -108,15 +108,15 @@ class entity:
                 self.rect.x = -1 * u
 
 class player(entity):
-    def __init__(self, x, y, speed_divider, direction, color) -> None:
-        super().__init__(x, y, speed_divider, direction, color)
+    def __init__(self, x, y, speed_divider, original_direction, color) -> None:
+        super().__init__(x, y, speed_divider, original_direction, color)
         self.input = None
         pygame.draw.circle(self.surface, color, (u/2, u/2), u/2)
     
-    def update_movement(self):
+    def update_direction(self):
         if self.input is not None:    
-            if (map_grid[self.y + int(self.input[1] / self.speed)]
-                        [self.x + int(self.input[0] / self.speed)]) == 0:
+            if not (map_grid[self.y + int(self.input[1] / self.speed)]
+                            [self.x + int(self.input[0] / self.speed)]):
                 self.movement = self.input
                 self.input = None
             else:
@@ -124,7 +124,7 @@ class player(entity):
     
     def wall_stop(self):
         if (map_grid[self.y + int(self.movement[1] / self.speed)]
-                    [self.x + int(self.movement[0] / self.speed)]):
+                    [self.x + int(self.movement[0] / self.speed)]) == 1:
             self.movement = (0, 0)
             self.rect.x = round(self.rect.x / u) * u
             self.rect.y = round(self.rect.y / u) * u
@@ -154,7 +154,7 @@ while True:
 
     
     if pac.x == pac.rect.x / u and pac.y == pac.rect.y / u:     # on full squares
-        pac.update_movement()
+        pac.update_direction()
         pac.tunnel()
         pac.wall_stop()
 
