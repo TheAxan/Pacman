@@ -62,16 +62,16 @@ pink = 255, 179, 255
 # background surface
 background = pygame.Surface((28 * u, 31 * u))
 
-square = pygame.Surface((u, u))     # Each cell is a squares of 1 unit
+square = pygame.Surface((u, u)) # Each cell is a squares of 1 unit
 square.fill(blue)
-pygame.draw.rect(square, dark_grey, (0, 0, u, u), 10)       # This is to identify separate squares visually
+pygame.draw.rect(square, dark_grey, (0, 0, u, u), 10)  # This is to identify separate squares visually
 
 y_counter = 0
 for row in map_grid:
     x_counter = 0
     for cell in row:
         if cell == 1:
-            background.blit(square, (x_counter * u, y_counter * u))     # This draws the map
+            background.blit(square, (x_counter * u, y_counter * u)) # This draws the map
         x_counter += 1
     y_counter += 1
 
@@ -153,7 +153,7 @@ while True:
             exit()
 
     
-    if pac.x == pac.rect.x / u and pac.y == pac.rect.y / u:     # on full squares
+    if pac.x == pac.rect.x / u and pac.y == pac.rect.y / u:  # on full squares
         pac.update_direction()
         pac.tunnel()
         pac.wall_stop()
