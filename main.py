@@ -126,10 +126,6 @@ class player(entity):
         if (map_grid[self.y + int(self.movement[1] / self.speed)]
                     [self.x + int(self.movement[0] / self.speed)]) == 1:
             self.movement = (0, 0)
-            self.rect.x = round(self.rect.x / u) * u
-            self.rect.y = round(self.rect.y / u) * u
-            self.x = int(self.rect.x / u)
-            self.y = int(self.rect.y / u)
 
 pac = player(14, 23, 15, 'left', yellow)
 
