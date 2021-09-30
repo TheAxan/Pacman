@@ -106,6 +106,14 @@ class entity:
                 self.rect.x = 28 * u
             elif self.x == 28:
                 self.rect.x = -1 * u
+    
+    def full_cell(self):  # Check if the object is on a full cell
+        if self.x == self.rect.x / u and self.y == self.rect.y / u:
+            self.full_cell_routine()
+
+    def full_cell_routine():
+        pass  # defined in subclass
+    
 
 class player(entity):
     def __init__(self, x, y, speed_divider, original_direction, color) -> None:
@@ -124,6 +132,12 @@ class player(entity):
         if (map_grid[self.y + int(self.movement[1] / self.speed)]
                     [self.x + int(self.movement[0] / self.speed)]) == 1:
             self.movement = (0, 0)
+    
+    def full_cell_routine(self):
+        self.update_direction()
+        self.tunnel()
+        self.wall_stop()
+    
 
 pac = player(14, 23, 15, 'left', yellow)
 
@@ -147,11 +161,7 @@ while True:
             exit()
 
     
-    if pac.x == pac.rect.x / u and pac.y == pac.rect.y / u:  # on full squares
-        pac.update_direction()
-        pac.tunnel()
-        pac.wall_stop()
-
+    pac.full_cell()
 
     pac.rect.move_ip(pac.movement)
     pac.update_pos()
