@@ -118,9 +118,7 @@ class player(entity):
             if not (map_grid[self.y + int(self.input[1] / self.speed)]
                             [self.x + int(self.input[0] / self.speed)]):
                 self.movement = self.input
-                self.input = None
-            else:
-                self.input = None
+            self.input = None
     
     def wall_stop(self):
         if (map_grid[self.y + int(self.movement[1] / self.speed)]
