@@ -75,9 +75,12 @@ for row in map_grid:
         x_counter += 1
     y_counter += 1
 
+entities = []
 
 class entity:
     def __init__(self, x, y, speed_divider, original_direction) -> None:
+        entities.append(self)
+        
         self.surface = pygame.Surface((u, u))
         self.surface.set_colorkey(black)
 
@@ -95,7 +98,6 @@ class entity:
             'down': (0, self.speed),
         }[original_direction]
 
-    
     def update_pos(self):
         self.x = round(self.rect.x / u)
         self.y = round(self.rect.y / u)
@@ -113,6 +115,12 @@ class entity:
 
     def full_cell_routine():
         pass  # defined in subclass
+
+    def routine(self):
+        self.full_cell()
+        self.rect.move_ip(self.movement)
+        self.update_pos()
+        screen.blit(self.surface, self.rect)
     
 
 class player(entity):
@@ -160,15 +168,10 @@ while True:
         elif event.type == pygame.QUIT:
             exit()
 
-    
-    pac.full_cell()
 
-    pac.rect.move_ip(pac.movement)
-    pac.update_pos()
-
-    # Refresh screen
-    screen.blit(background, (0, 0))
-    screen.blit(pac.surface, pac.rect)
+    screen.blit(background, (0, 0))  # reset background
+    for entity in entities:
+        entity.routine()
 
     clock.tick(60)
     pygame.display.flip()
