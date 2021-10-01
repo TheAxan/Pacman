@@ -147,6 +147,17 @@ class player(entity):
         self.wall_stop()
     
 
+ghost_template = pygame.Surface((u, u))
+pygame.draw.circle(ghost_template, white, (u/2, u/2), u/2)
+pygame.draw.rect(ghost_template, black, (0, u/2, u, u/2))
+pygame.draw.polygon(ghost_template, white, ((0, u/2), 
+                                            (0, u), 
+                                            (u/4, u * 3/4), 
+                                            (u/2, u), 
+                                            (u * 3/4, u * 3/4), 
+                                            (u, u), 
+                                            (u, u/2)))
+
 pac = player(14, 23, 15, 'left', yellow)
 
 
