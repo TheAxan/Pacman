@@ -113,7 +113,7 @@ class entity:
         if self.x == self.rect.x / u and self.y == self.rect.y / u:
             self.full_cell_routine()
 
-    def full_cell_routine():
+    def full_cell_routine(self):
         pass  # defined in subclass
 
     def routine(self):
