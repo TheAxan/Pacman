@@ -158,6 +158,25 @@ pygame.draw.polygon(ghost_template, white, ((0, u/2),
                                             (u, u), 
                                             (u, u/2)))
 
+
+class ennemy(entity):
+    def __init__(self, x, y, speed_divider, original_direction, color) -> None:
+        super().__init__(x, y, speed_divider, original_direction)
+        self.surface.blit(ghost_template, (0, 0))
+        self.surface.fill(color, special_flags=pygame.BLEND_MULT)
+    
+    def full_cell_routine(self):
+        self.corner()
+        self.tunnel()
+
+    def corner(self):
+        if map_grid[self.y][self.x] == 2:
+            self.pathing()
+
+    def pathing(self):  # todo A* pathing
+        self.movement = (0, 0)
+
+
 pac = player(14, 23, 15, 'left', yellow)
 
 
