@@ -48,6 +48,7 @@ u = {  # 1 unit is 30 pixels by default (840x930), 38 for 1064x1178, 34 for 952x
 }.get((pygame.display.Info().current_w, pygame.display.Info().current_h), 30)
 screen = pygame.display.set_mode((28 * u, 31 * u))
 
+
 # colors definition
 white = 255, 255, 255
 black = 0, 0, 0
@@ -58,6 +59,7 @@ red = 255, 0, 0
 orange = 255, 153, 0
 cyan = 0, 230, 230
 pink = 255, 179, 255
+
 
 # background surface
 background = pygame.Surface((28 * u, 31 * u))
@@ -76,8 +78,13 @@ for row in map_grid:
     y_counter += 1
 
 
+entities = []
+
+
 class entity:
     def __init__(self, x, y, speed_divider, original_direction) -> None:
+        entities.append(self)
+        
         self.surface = pygame.Surface((u, u))
         self.surface.set_colorkey(black)
 
@@ -95,7 +102,6 @@ class entity:
             'down': (0, self.speed),
         }[original_direction]
 
-    
     def update_pos(self):
         self.x = round(self.rect.x / u)
         self.y = round(self.rect.y / u)
@@ -106,6 +112,20 @@ class entity:
                 self.rect.x = 28 * u
             elif self.x == 28:
                 self.rect.x = -1 * u
+    
+    def full_cell(self):  # Check if the object is on a full cell
+        if self.x == self.rect.x / u and self.y == self.rect.y / u:
+            self.full_cell_routine()
+
+    def full_cell_routine(self):
+        pass  # defined in subclass
+
+    def routine(self):
+        self.full_cell()
+        self.rect.move_ip(self.movement)
+        self.update_pos()
+        screen.blit(self.surface, self.rect)
+    
 
 class player(entity):
     def __init__(self, x, y, speed_divider, original_direction, color) -> None:
@@ -124,8 +144,53 @@ class player(entity):
         if (map_grid[self.y + int(self.movement[1] / self.speed)]
                     [self.x + int(self.movement[0] / self.speed)]) == 1:
             self.movement = (0, 0)
+    
+    def full_cell_routine(self):
+        self.update_direction()
+        self.tunnel()
+        self.wall_stop()
+        # TODO: self.collision()
+    
+    # TODO
+    # def collision(): 
+    #     if self.x TODO: position function? in one, not xy, with some way to modify for when it looks in relation to (ie wall_stop)
+    
+
+ghost_template = pygame.Surface((u, u))
+pygame.draw.circle(ghost_template, white, (u/2, u/2), u/2)
+pygame.draw.rect(ghost_template, black, (0, u/2, u, u/2))
+pygame.draw.polygon(ghost_template, white, ((0, u/2), 
+                                            (0, u), 
+                                            (u/4, u * 3/4), 
+                                            (u/2, u), 
+                                            (u * 3/4, u * 3/4), 
+                                            (u, u), 
+                                            (u, u/2)))
+
+
+class ennemy(entity):
+    def __init__(self, x, y, speed_divider, original_direction, color) -> None:
+        super().__init__(x, y, speed_divider, original_direction)
+        self.surface.blit(ghost_template, (0, 0))
+        self.surface.fill(color, special_flags=pygame.BLEND_MULT)
+    
+    def full_cell_routine(self):
+        self.corner()
+        self.tunnel()
+
+    def corner(self):
+        if map_grid[self.y][self.x] == 2:
+            self.pathing()
+
+    def pathing(self):  # TODO A* pathing
+        self.movement = (0, 0)
+
 
 pac = player(14, 23, 15, 'left', yellow)
+blinky = ennemy(13, 13, 18, 'up', red)
+inky = ennemy(6, 19, 18, 'up', cyan)
+pinky = ennemy(14, 13, 18, 'up', pink)
+clyde = ennemy(15, 13, 18, 'up', orange)
 
 
 while True:
@@ -142,23 +207,12 @@ while True:
                 exit()
             elif event.key in ():
                 pass
-        
         elif event.type == pygame.QUIT:
             exit()
 
-    
-    if pac.x == pac.rect.x / u and pac.y == pac.rect.y / u:  # on full squares
-        pac.update_direction()
-        pac.tunnel()
-        pac.wall_stop()
 
-
-    pac.rect.move_ip(pac.movement)
-    pac.update_pos()
-
-    # Refresh screen
-    screen.blit(background, (0, 0))
-    screen.blit(pac.surface, pac.rect)
-
+    screen.blit(background, (0, 0))  # reset background
+    for entity in entities:
+        entity.routine()
     clock.tick(60)
     pygame.display.flip()
