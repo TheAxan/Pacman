@@ -187,6 +187,10 @@ class ennemy(entity):
 
 
 pac = player(14, 23, 15, 'left', yellow)
+blinky = ennemy(13, 13, 18, 'up', red)
+inky = ennemy(6, 19, 18, 'up', cyan)
+pinky = ennemy(14, 13, 18, 'up', pink)
+clyde = ennemy(15, 13, 18, 'up', orange)
 
 
 while True:
