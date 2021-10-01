@@ -48,6 +48,7 @@ u = {  # 1 unit is 30 pixels by default (840x930), 38 for 1064x1178, 34 for 952x
 }.get((pygame.display.Info().current_w, pygame.display.Info().current_h), 30)
 screen = pygame.display.set_mode((28 * u, 31 * u))
 
+
 # colors definition
 white = 255, 255, 255
 black = 0, 0, 0
@@ -58,6 +59,7 @@ red = 255, 0, 0
 orange = 255, 153, 0
 cyan = 0, 230, 230
 pink = 255, 179, 255
+
 
 # background surface
 background = pygame.Surface((28 * u, 31 * u))
@@ -75,7 +77,9 @@ for row in map_grid:
         x_counter += 1
     y_counter += 1
 
+
 entities = []
+
 
 class entity:
     def __init__(self, x, y, speed_divider, original_direction) -> None:
@@ -145,6 +149,11 @@ class player(entity):
         self.update_direction()
         self.tunnel()
         self.wall_stop()
+        # TODO: self.collision()
+    
+    # TODO
+    # def collision(): 
+    #     if self.x TODO: position function? in one, not xy, with some way to modify for when it looks in relation to (ie wall_stop)
     
 
 ghost_template = pygame.Surface((u, u))
@@ -173,7 +182,7 @@ class ennemy(entity):
         if map_grid[self.y][self.x] == 2:
             self.pathing()
 
-    def pathing(self):  # todo A* pathing
+    def pathing(self):  # TODO A* pathing
         self.movement = (0, 0)
 
 
@@ -194,7 +203,6 @@ while True:
                 exit()
             elif event.key in ():
                 pass
-        
         elif event.type == pygame.QUIT:
             exit()
 
@@ -202,6 +210,5 @@ while True:
     screen.blit(background, (0, 0))  # reset background
     for entity in entities:
         entity.routine()
-
     clock.tick(60)
     pygame.display.flip()
