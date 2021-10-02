@@ -45,8 +45,9 @@ pygame.display.set_mode()  # The display must be initialized first or it might g
 u = {  # 1 unit is 30 pixels by default (840x930), 38 for 1064x1178, 34 for 952x1054
     (1920, 1080): 34,
     (1080, 1920): 38,
+    (2560, 1440): 44,  # 46 messes with wall_stop and 45 with corner??
 }.get((pygame.display.Info().current_w, pygame.display.Info().current_h), 30)
-screen = pygame.display.set_mode((28 * u, 31 * u))
+screen = pygame.display.set_mode((28 * u, 31 * u), flags=pygame.NOFRAME)
 
 
 # colors definition
@@ -169,12 +170,14 @@ pygame.draw.polygon(ghost_template, white, ((0, u/2),
 
 
 class ennemy(entity):
-    def __init__(self, x, y, speed_divider, original_direction, color) -> None:
+    def __init__(self, x, y, speed_divider, original_direction, color, name) -> None:
         super().__init__(x, y, speed_divider, original_direction)
         self.surface.blit(ghost_template, (0, 0))
         self.surface.fill(color, special_flags=pygame.BLEND_MULT)
-    
+        self.name = name
+
     def full_cell_routine(self):
+        self.collision()
         self.corner()
         self.tunnel()
 
@@ -182,15 +185,20 @@ class ennemy(entity):
         if map_grid[self.y][self.x] == 2:
             self.pathing()
 
+    def collision(self):
+        if (self.x, self.y) == (pac.x, pac.y):
+            print(f'Game over, {self.name} got you')  # TODO game over screen
+            exit()
+            
     def pathing(self):  # TODO A* pathing
         self.movement = (0, 0)
 
 
 pac = player(14, 23, 15, 'left', yellow)
-blinky = ennemy(13, 13, 18, 'up', red)
-inky = ennemy(6, 19, 18, 'up', cyan)
-pinky = ennemy(14, 13, 18, 'up', pink)
-clyde = ennemy(15, 13, 18, 'up', orange)
+blinky = ennemy(17, 23, 18, 'left', red, 'Blinky')
+inky = ennemy(22, 14, 18, 'right', cyan, 'Inky')
+pinky = ennemy(16, 29, 18, 'right', pink, 'Pinky')
+clyde = ennemy(21, 13, 18, 'up', orange, 'Clyde')
 
 
 while True:
