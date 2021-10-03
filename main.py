@@ -150,11 +150,6 @@ class player(entity):
         self.update_direction()
         self.tunnel()
         self.wall_stop()
-        # TODO: self.collision()
-    
-    # TODO
-    # def collision(): 
-    #     if self.x TODO: position function? in one, not xy, with some way to modify for when it looks in relation to (ie wall_stop)
     
 
 ghost_template = pygame.Surface((u, u))
