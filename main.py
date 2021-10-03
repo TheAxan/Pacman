@@ -1,4 +1,7 @@
-from classes import *
+import pygame
+from classes import entities, pac
+from map import background
+from initialisation import screen
 from sys import exit
 
 pygame.init()

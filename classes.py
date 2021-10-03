@@ -1,24 +1,6 @@
-from map import *
-
-
-
-# general definitions
-
-
-
-
-
-
-
-
-# colors definition
-
-
-
-# background surface
-
-# from map import background, map_grid
-
+import pygame
+from map import map_grid
+from initialisation import *
 
 entities = []
 

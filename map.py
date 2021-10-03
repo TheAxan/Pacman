@@ -1,4 +1,5 @@
-from initialisation import *
+from initialisation import u, blue, dark_grey
+import pygame
 
 map_grid = [  # 0 is empty, 1 is a wall, 2 is a turning point
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
