@@ -1,14 +1,8 @@
 import pygame
 from sys import exit
-
-from initialisation import screen
-from maps import background
-from classes import entities, pac
-
+from setup import pac, screen, background, entities
 
 pygame.init()
-
-
 clock = pygame.time.Clock()
 
 while True:
@@ -27,7 +21,6 @@ while True:
                 pass
         elif event.type == pygame.QUIT:
             exit()
-
 
     screen.blit(background, (0, 0))  # reset background
     for entity in entities:
