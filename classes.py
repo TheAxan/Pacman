@@ -1,6 +1,8 @@
 import pygame
-from map import map_grid
+
+from maps import default_map as map_grid
 from initialisation import *
+
 
 entities = []
 

@@ -1,7 +1,9 @@
-from initialisation import u, blue, dark_grey
 import pygame
 
-map_grid = [  # 0 is empty, 1 is a wall, 2 is a turning point
+from initialisation import u, blue, dark_grey
+
+
+default_map = [  # 0 is empty, 1 is a wall, 2 is a turning point
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
     [1, 2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 2, 1, 1, 2, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 2, 1],
     [1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1],
@@ -42,7 +44,7 @@ square.fill(blue)
 pygame.draw.rect(square, dark_grey, (0, 0, u, u), 10)  # This is to identify separate squares visually
 
 y_counter = 0
-for row in map_grid:
+for row in default_map:
     x_counter = 0
     for cell in row:
         if cell == 1:

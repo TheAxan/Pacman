@@ -1,10 +1,13 @@
 import pygame
-from classes import entities, pac
-from map import background
-from initialisation import screen
 from sys import exit
 
+from initialisation import screen
+from maps import background
+from classes import entities, pac
+
+
 pygame.init()
+
 
 clock = pygame.time.Clock()
 
