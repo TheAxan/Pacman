@@ -144,7 +144,7 @@ class player(entity):
     
     def full_cell_routine(self):
         self.update_direction()
-        self.tunnel()
+        self.tunnel_warp()
         self.wall_stop()
     
 
@@ -165,7 +165,7 @@ class ennemy(entity):
     def full_cell_routine(self):
         self.player_collision()
         self.corner_check()
-        self.tunnel()
+        self.tunnel_warp()
 
     def corner_check(self):
         if map_grid[self.y][self.x] == 2:
