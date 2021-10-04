@@ -17,8 +17,6 @@ while True:
                 }[event.key]
             elif event.key is pygame.K_ESCAPE:
                 exit()
-            elif event.key in ():
-                pass
         elif event.type == pygame.QUIT:
             exit()
 
