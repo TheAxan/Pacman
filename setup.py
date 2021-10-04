@@ -54,7 +54,7 @@ default_map = [  # 0 is empty, 1 is a wall, 2 is a turning point
     [1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1],
     [1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 1],
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-]
+]  # in python 3.9 my tests showed list access to be much faster than tuple acces, in 3.8 tuples were slightly faster
 
 background = pygame.Surface((28 * u, 31 * u))
 
