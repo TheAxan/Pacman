@@ -1,5 +1,5 @@
 import pygame
-from sys import exit
+import sys
 from setup import pac, screen, background, entities
 
 pygame.init()
@@ -16,9 +16,9 @@ while True:
                     pygame.K_DOWN: (0, pac.speed),
                 }[event.key]
             elif event.key is pygame.K_ESCAPE:
-                exit()
+                sys.exit()
         elif event.type == pygame.QUIT:
-            exit()
+            sys.exit()
 
     screen.blit(background, (0, 0))  # reset background
     for entity in entities:

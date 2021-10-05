@@ -1,7 +1,7 @@
 import pygame
-from random import randrange
-from tools import create_empty_array
-from sys import exit
+import random
+import tools
+import sys
 
 pygame.init()
 
@@ -30,10 +30,10 @@ def square(color):
 black_square = square(black)
 
 while True:
-    array = create_empty_array(array_size, array_size)
+    array = tools.create_empty_array(array_size, array_size)
 
-    origin = {'x': randrange(array_size), 'y': randrange(array_size)}
-    end = {'x': randrange(array_size), 'y': randrange(array_size)}
+    origin = {'x': random.randrange(array_size), 'y': random.randrange(array_size)}
+    end = {'x': random.randrange(array_size), 'y': random.randrange(array_size)}
     
     for point, value in ((origin, 2), (end, 3)):
         array[point['x']][point['y']] = value
@@ -41,7 +41,7 @@ while True:
     for row in array:
         for _ in range(int(array_size * 0.2)):
             while True:
-                position = randrange(array_size)
+                position = random.randrange(array_size)
                 if row[position] == 0:
                     row[position] = 1
                     break
@@ -61,12 +61,12 @@ while True:
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
                 if event.key is pygame.K_ESCAPE:
-                    exit()
+                    sys.exit()
                 if event.key is pygame.K_BACKSPACE:
                     reset_array = True
                     # TODO verify if it effectively breaks from nested loop (nearest while true)
                     # (which appears to not actually be a nested loop, those being for i in list: for j in list2:)
             elif event.type == pygame.QUIT:
-                exit()
+                sys.exit()
         
         pygame.display.flip()
