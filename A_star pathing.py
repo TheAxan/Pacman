@@ -1,6 +1,6 @@
 import pygame
-import random
-from tools import create_empty_array
+from random import randrange
+from tools import create_empty_array, print_array
 from sys import exit
 
 pygame.init()
@@ -29,13 +29,20 @@ while True:
     array = create_empty_array(array_size, array_size)
 
     for row in array:
-        for _ in range(random.randrange(array_size/3)):
+        for _ in range(randrange(array_size/3)):
             while True:
-                position = random.randrange(array_size)
+                position = randrange(array_size)
                 if row[position] == 0:
                     row[position] = 1
                     break
-
+    
+    for axis in (x, y):
+        for point in (origin, end):
+            point.axis = randrange(array_size)
+    
+    for point, value in ((origin, 2), (end, 3)):
+        array[point.y][point.y] = value
+    
     for y_counter, row in enumerate(array):
         for x_counter, cell in enumerate(row):
             background.blit(outer_square, (x_counter * u, y_counter * u))
