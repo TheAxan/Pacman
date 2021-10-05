@@ -35,7 +35,7 @@ while True:
         array[point['x']][point['y']] = value
     
     for row in array:
-        for _ in range(randrange(int(array_size/3))):
+        for _ in range(int(array_size * 0.2)):
             while True:
                 position = randrange(array_size)
                 if row[position] == 0:
