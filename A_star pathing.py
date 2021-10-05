@@ -1,6 +1,6 @@
 import pygame
 from random import randrange
-from tools import create_empty_array, print_array
+from tools import create_empty_array
 from sys import exit
 
 pygame.init()
@@ -28,6 +28,12 @@ black_square.fill(black)
 while True:
     array = create_empty_array(array_size, array_size)
 
+    origin = {'x': randrange(array_size), 'y': randrange(array_size)}
+    end = {'x': randrange(array_size), 'y': randrange(array_size)}
+    
+    for point, value in ((origin, 2), (end, 3)):
+        array[point['x']][point['y']] = value
+    
     for row in array:
         for _ in range(randrange(int(array_size/3))):
             while True:
@@ -35,13 +41,6 @@ while True:
                 if row[position] == 0:
                     row[position] = 1
                     break
-    
-    for axis in (x, y):
-        for point in (origin, end):
-            point.axis = randrange(array_size)
-    
-    for point, value in ((origin, 2), (end, 3)):
-        array[point.y][point.y] = value
     
     for y_counter, row in enumerate(array):
         for x_counter, cell in enumerate(row):
