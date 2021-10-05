@@ -10,10 +10,11 @@ u = 30
 array_size = 20
 
 white = 255, 255, 255
-orange = 255, 153, 0
-cyan = 0, 230, 230
 black = 0,0,0
-transparent = 0,0,0,0
+orange = 255, 153, 0, 120 # explored
+cyan = 0, 230, 230, 120 # to explore
+green = 0, 255, 0, 120 # origin
+red = 255, 0, 0, 120 # goal
 
 screen = pygame.display.set_mode((array_size * u, array_size * u), flags=pygame.NOFRAME)
 background = pygame.Surface((array_size * u, array_size * u))
@@ -22,8 +23,11 @@ outer_square = pygame.Surface((u, u))
 outer_square.fill(white)
 pygame.draw.rect(outer_square, black, (0, 0, u, u), 2)
 
-black_square = pygame.Surface((u, u))
-black_square.fill(black)
+def square(color):
+    colored_square = pygame.Surface((u, u))
+    colored_square.fill(color)
+    return colored_square
+black_square = square(black)
 
 while True:
     array = create_empty_array(array_size, array_size)
@@ -49,6 +53,8 @@ while True:
                 background.blit(black_square, (x_counter * u, y_counter * u))
 
     screen.blit(background, (0,0))
+    screen.blit(square(green), (origin['x']*u, origin['y']*u))
+    screen.blit(square(red), (end['x']*u, end['y']*u))
 
     reset_array = False
     while not reset_array:
