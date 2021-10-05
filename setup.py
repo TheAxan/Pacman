@@ -72,7 +72,7 @@ for y_counter, row in enumerate(map_grid):
 
 entities = []  # to loop through routines
 
-class entity:
+class Entity:
     def __init__(self, x, y, speed_divider, original_direction) -> None:
         entities.append(self)
         
@@ -121,7 +121,7 @@ class entity:
         pass  # defined in subclass
 
 
-class player(entity):
+class Player(Entity):
     def __init__(self, x, y, speed_divider, original_direction, color) -> None:
         super().__init__(x, y, speed_divider, original_direction)
         
@@ -152,7 +152,7 @@ pygame.draw.rect(ghost_template, black, (0, u/2, u, u/2))
 pygame.draw.polygon(ghost_template, white, (
     (0, u/2), (0, u), (u/4, u*3/4), (u/2, u), (u*3/4, u*3/4), (u, u), (u, u/2)))
 
-class ennemy(entity):
+class Ennemy(Entity):
     def __init__(self, x, y, speed_divider, original_direction, color, name) -> None:
         super().__init__(x, y, speed_divider, original_direction)
         
@@ -178,8 +178,8 @@ class ennemy(entity):
         self.movement = (0, 0)
 
 
-pac = player(14, 23, 15, 'left', yellow)
-blinky = ennemy(17, 23, 18, 'left', red, 'Blinky')
-inky = ennemy(22, 14, 18, 'right', cyan, 'Inky')
-pinky = ennemy(16, 29, 18, 'right', pink, 'Pinky')
-clyde = ennemy(21, 13, 18, 'up', orange, 'Clyde')
+pac = Player(14, 23, 15, 'left', yellow)
+blinky = Ennemy(17, 23, 18, 'left', red, 'Blinky')
+inky = Ennemy(22, 14, 18, 'right', cyan, 'Inky')
+pinky = Ennemy(16, 29, 18, 'right', pink, 'Pinky')
+clyde = Ennemy(21, 13, 18, 'up', orange, 'Clyde')
