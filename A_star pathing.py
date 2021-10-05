@@ -36,7 +36,7 @@ while True:
     end = {'x': random.randrange(array_size), 'y': random.randrange(array_size)}
     
     for point, value in ((origin, 2), (end, 3)):
-        array[point['x']][point['y']] = value
+        array[point['y']][point['x']] = value
     
     for row in array:
         for _ in range(int(array_size * 0.2)):
