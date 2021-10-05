@@ -65,15 +65,10 @@ square = pygame.Surface((u, u))
 square.fill(blue)
 pygame.draw.rect(square, dark_grey, (0, 0, u, u), 10)
 
-y_counter = 0
-for row in map_grid:
-    x_counter = 0
-    for cell in row:
+for y_counter, row in enumerate(map_grid):
+    for x_counter, cell in enumerate(row):
         if cell == 1:
             background.blit(square, (x_counter * u, y_counter * u)) # This draws the map
-        x_counter += 1
-    y_counter += 1
-
 
 entities = []  # to loop through routines
 

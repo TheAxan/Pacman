@@ -33,12 +33,10 @@ original_map = [  # 0 is empty, 1 is a wall, 2 is a turning point
 ]
 
 def corner_finder(map):
-    y_counter = 0
     new_map = []
-    for row in map:
-        x_counter = 0
+    for y_counter, row in enumerate(map):
         new_row = []
-        for cell in row:
+        for x_counter, cell in enumerate(row):
             if cell == 1:
                 new_row.append(cell)
             else:
@@ -57,9 +55,7 @@ def corner_finder(map):
                         new_row.append(0)
                 except:
                     new_row.append(0)
-            x_counter += 1
         new_map.append(new_row)
-        y_counter += 1
     return new_map
 
 def print_array(array):
