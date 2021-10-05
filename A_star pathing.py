@@ -29,8 +29,12 @@ while True:
     array = create_empty_array(array_size, array_size)
 
     for row in array:
-        for _ in range(random.randrange(array_size)):
-            row[random.randrange(array_size)] = 1
+        for _ in range(random.randrange(array_size/3)):
+            while True:
+                position = random.randrange(array_size)
+                if row[position] == 0:
+                    row[position] = 1
+                    break
 
     for y_counter, row in enumerate(array):
         for x_counter, cell in enumerate(row):
