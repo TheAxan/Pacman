@@ -29,7 +29,7 @@ while True:
     array = create_empty_array(array_size, array_size)
 
     for row in array:
-        for _ in range(randrange(array_size/3)):
+        for _ in range(randrange(int(array_size/3))):
             while True:
                 position = randrange(array_size)
                 if row[position] == 0:
