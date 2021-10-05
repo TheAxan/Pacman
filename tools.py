@@ -63,4 +63,4 @@ def print_array(array):
         print(str(row) + ',')
 
 def create_empty_array(width, height):
-    return [[0] * width] * height
+    return [[0] * width] for _ in range(height)]
