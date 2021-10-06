@@ -43,8 +43,8 @@ class Point():
 
 
 # randomly set origin and end
-origin = Point(random.randrange(array_size), random.randrange(array_size))
-end = Point(random.randrange(array_size), random.randrange(array_size))
+origin = (random.randrange(array_size), random.randrange(array_size))
+end = (random.randrange(array_size), random.randrange(array_size))
 
 # randomly place walls
 for row in array:
@@ -63,5 +63,5 @@ for y_counter, row in enumerate(array):
             background.blit(black_square, (x_counter * u, y_counter * u))
 
 screen.blit(background, (0,0))
-screen.blit(create_square(green, 120), (origin.x * u, origin.y * u))
-screen.blit(create_square(red, 120), (end.x * u, end.y * u))
+screen.blit(create_square(green, 120), (origin[0] * u, origin[1] * u))
+screen.blit(create_square(red, 120), (end[0] * u, end[1] * u))
