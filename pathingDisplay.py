@@ -66,11 +66,11 @@ screen.blit(background, (0,0))
 screen.blit(create_square(green, 120), (origin.x * u, origin.y * u))
 screen.blit(create_square(red, 120), (end.x * u, end.y * u))
 
-while True:
-    for event in pygame.event.get():
-        if event.type == pygame.KEYDOWN:
-            if event.key is pygame.K_ESCAPE:
-                sys.exit()
-        elif event.type == pygame.QUIT:
-            sys.exit()
-    pygame.display.flip()
+# while True:
+#     for event in pygame.event.get():
+#         if event.type == pygame.KEYDOWN:
+#             if event.key is pygame.K_ESCAPE:
+#                 sys.exit()
+#         elif event.type == pygame.QUIT:
+#             sys.exit()
+#     pygame.display.flip()
