@@ -61,12 +61,10 @@ for y_counter, row in enumerate(array):
         if array[y_counter][x_counter] == 1:
             background.blit(black_square, (x_counter * u, y_counter * u))
 
-
 screen.blit(background, (0,0))
 screen.blit(create_square(green, 120), (origin.x * u, origin.y * u))
 screen.blit(create_square(red, 120), (end.x * u, end.y * u))
 
-arial.render_to(screen, (end.x * u, end.y * u), '00', green)
 
 while True:
     for event in pygame.event.get():
