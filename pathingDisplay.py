@@ -46,6 +46,9 @@ class Point():
 origin = (random.randrange(array_size), random.randrange(array_size))
 end = (random.randrange(array_size), random.randrange(array_size))
 
+for point, value in ((origin, 2), (end, 3)):
+    array[point[1]][point[0]] = value
+
 # randomly place walls
 for row in array:
     for _ in range(int(array_size * 0.2)):
