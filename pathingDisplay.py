@@ -6,9 +6,9 @@ import sys
 
 pygame.init()
 
-u = 30
+u = 4
 
-array_size = 20
+array_size = 250
 
 white = 255, 255, 255
 black = 0,0,0
@@ -30,7 +30,7 @@ black_square = create_square(black)
 orange_square = create_square(orange, 120)
 cyan_square = create_square(cyan, 120)
 outer_square = create_square(white)
-pygame.draw.rect(outer_square, black, (0, 0, u, u), 1)
+# pygame.draw.rect(outer_square, black, (0, 0, u, u), 1)
 
 arial = pygame.freetype.SysFont('arial', 10)
 

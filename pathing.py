@@ -3,7 +3,7 @@ import pygame
 from pathingDisplay import *
 
 
-node_array = tools.create_empty_array(len(array[0]), len(array))
+
 
 def neighbors(center):
     neighbors_list = []
@@ -16,6 +16,9 @@ def neighbors(center):
         except:
             pass
     return neighbors_list
+
+def heuristic(a, b):
+    return abs(a[0] - b[0]) + abs(a[1] - b[1])
 
 frontier = queue.PriorityQueue()
 frontier.put([0, origin])
@@ -32,7 +35,7 @@ while not frontier.empty():
         new_cost = cost_so_far[current[1]] + 1
         if next not in cost_so_far or new_cost < cost_so_far[next]:
             cost_so_far[next] = new_cost
-            frontier.put([new_cost, next])
+            frontier.put([new_cost + heuristic(end, next), next])
             came_from[next] = current[1]
             screen.blit(orange_square, (next[0]*u, next[1]*u))
 
