@@ -66,8 +66,6 @@ while True:
                     sys.exit()
                 if event.key is pygame.K_BACKSPACE:
                     reset_array = True
-                    # TODO verify if it effectively breaks from nested loop (nearest while true)
-                    # (which appears to not actually be a nested loop, those being for i in list: for j in list2:)
             elif event.type == pygame.QUIT:
                 sys.exit()
         
