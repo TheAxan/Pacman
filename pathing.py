@@ -31,6 +31,7 @@ cyan_square = create_square(cyan, 120)
 outer_square = create_square(white)
 pygame.draw.rect(outer_square, black, (0, 0, u, u), 1)
 
+arial = pygame.freetype.SysFont('arial', 10)
 while True:
     array = tools.create_empty_array(array_size, array_size)
 
@@ -57,9 +58,8 @@ while True:
 
 
     screen.blit(background, (0,0))
-    screen.blit(create_square(green, 120), (origin['x']*u, origin['y']*u))
-    screen.blit(create_square(red, 120), (end['x']*u, end['y']*u))
-
+    arial.render_to(screen, (end.x * u, end.y * u), '00', green)
+    
     reset_array = False
     while not reset_array:
         for event in pygame.event.get():
