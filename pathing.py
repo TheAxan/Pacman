@@ -34,12 +34,12 @@ pygame.draw.rect(outer_square, black, (0, 0, u, u), 1)
 while True:
     array = tools.create_empty_array(array_size, array_size)
 
-    origin = {'x': random.randrange(array_size), 'y': random.randrange(array_size)}
-    end = {'x': random.randrange(array_size), 'y': random.randrange(array_size)}
+    # randomly set origin and end
     
-    for point, value in ((origin, 2), (end, 3)):
-        array[point['y']][point['x']] = value
+    # for point, value in ((origin, 2), (end, 3)):
+    #     array[point.y][point.x] = value
     
+    # randomly place walls
     for row in array:
         for _ in range(int(array_size * 0.2)):
             while True:
@@ -48,11 +48,13 @@ while True:
                     row[position] = 1
                     break
     
+    # make background
     for y_counter, row in enumerate(array):
         for x_counter, cell in enumerate(row):
             background.blit(outer_square, (x_counter * u, y_counter * u))
             if array[y_counter][x_counter] == 1:
                 background.blit(black_square, (x_counter * u, y_counter * u))
+
 
     screen.blit(background, (0,0))
     screen.blit(create_square(green, 120), (origin['x']*u, origin['y']*u))
