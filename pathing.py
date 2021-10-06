@@ -1,5 +1,5 @@
 import queue
-from pathing_display import array
+from pathingDisplay import array, origin
 
 
 class Point():
@@ -8,6 +8,8 @@ class Point():
         self.y = y
 
 def neighbors():
+    pass
+
 
 frontier = queue.Queue()
 frontier.put(origin)
