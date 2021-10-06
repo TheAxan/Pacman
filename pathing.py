@@ -33,51 +33,46 @@ pygame.draw.rect(outer_square, black, (0, 0, u, u), 1)
 
 arial = pygame.freetype.SysFont('arial', 10)
 
+array = tools.create_empty_array(array_size, array_size)
 
 class Point():
     def __init__(self, x, y) -> None:
         self.x = x
         self.y = y
 
+
+# randomly set origin and end
+origin = Point(random.randrange(array_size), random.randrange(array_size))
+end = Point(random.randrange(array_size), random.randrange(array_size))
+
+# randomly place walls
+for row in array:
+    for _ in range(int(array_size * 0.2)):
+        while True:
+            position = random.randrange(array_size)
+            if row[position] == 0:
+                row[position] = 1
+                break
+
+# make background
+for y_counter, row in enumerate(array):
+    for x_counter, cell in enumerate(row):
+        background.blit(outer_square, (x_counter * u, y_counter * u))
+        if array[y_counter][x_counter] == 1:
+            background.blit(black_square, (x_counter * u, y_counter * u))
+
+
+screen.blit(background, (0,0))
+screen.blit(create_square(green, 120), (origin.x * u, origin.y * u))
+screen.blit(create_square(red, 120), (end.x * u, end.y * u))
+
+arial.render_to(screen, (end.x * u, end.y * u), '00', green)
+
 while True:
-    array = tools.create_empty_array(array_size, array_size)
-
-    # randomly set origin and end
-    origin = Point(random.randrange(array_size), random.randrange(array_size))
-    end = Point(random.randrange(array_size), random.randrange(array_size))
-    
-    # randomly place walls
-    for row in array:
-        for _ in range(int(array_size * 0.2)):
-            while True:
-                position = random.randrange(array_size)
-                if row[position] == 0:
-                    row[position] = 1
-                    break
-    
-    # make background
-    for y_counter, row in enumerate(array):
-        for x_counter, cell in enumerate(row):
-            background.blit(outer_square, (x_counter * u, y_counter * u))
-            if array[y_counter][x_counter] == 1:
-                background.blit(black_square, (x_counter * u, y_counter * u))
-
-
-    screen.blit(background, (0,0))
-    screen.blit(create_square(green, 120), (origin.x * u, origin.y * u))
-    screen.blit(create_square(red, 120), (end.x * u, end.y * u))
-
-    arial.render_to(screen, (end.x * u, end.y * u), '00', green)
-    
-    reset_array = False
-    while not reset_array:
-        for event in pygame.event.get():
-            if event.type == pygame.KEYDOWN:
-                if event.key is pygame.K_ESCAPE:
-                    sys.exit()
-                if event.key is pygame.K_BACKSPACE:
-                    reset_array = True
-            elif event.type == pygame.QUIT:
+    for event in pygame.event.get():
+        if event.type == pygame.KEYDOWN:
+            if event.key is pygame.K_ESCAPE:
                 sys.exit()
-        
-        pygame.display.flip()
+        elif event.type == pygame.QUIT:
+            sys.exit()
+    pygame.display.flip()
