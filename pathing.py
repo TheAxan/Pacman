@@ -39,19 +39,19 @@ def path_finder(start_node: coordinates, end_node: coordinates, array: list[list
 
     while not nodes_to_explore.empty():
         current_node = nodes_to_explore.get()
-        if current_node[1] == end_node:
-            break
         for new_node in neighbors(current_node[1], array, navigatable_values):
             new_g_cost = g_cost[current_node[1]] + 1
             if new_node not in g_cost or new_g_cost < g_cost[new_node]:
                 g_cost[new_node] = new_g_cost
                 nodes_to_explore.put((new_g_cost + heuristic_cost(end_node, new_node), new_node))
                 origin_node[new_node] = current_node[1]
+        if current_node[1] == end_node:
+            break
     
     active_node = end_node
     path = [active_node]
     while active_node != start_node:
-        active_node = origin_node[active_node]
+        active_node = origin_node[active_node]  # BUG KeyError due to negative index. Happens when you turn in tunnels
         path.append(active_node)
     path.reverse()
     return path
