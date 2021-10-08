@@ -71,11 +71,12 @@ for y_counter, row in enumerate(map_grid):
         if cell == 1:
             background.blit(square, (x_counter * u, y_counter * u)) # This draws the map
 
-entities = []  # to loop through routines
 
 class Entity:
+    entities = []  # to loop through routines
+    
     def __init__(self, x, y, speed_divider, original_direction) -> None:
-        entities.append(self)
+        Entity.entities.append(self)
         
         self.surface = pygame.Surface((u, u))
         self.surface.set_colorkey(black)
@@ -147,17 +148,17 @@ class Player(Entity):
         self.wall_stop()
     
 
-ghost_template = pygame.Surface((u, u))
-pygame.draw.circle(ghost_template, white, (u/2, u/2), u/2)
-pygame.draw.rect(ghost_template, black, (0, u/2, u, u/2))
-pygame.draw.polygon(ghost_template, white, (
-    (0, u/2), (0, u), (u/4, u*3/4), (u/2, u), (u*3/4, u*3/4), (u, u), (u, u/2)))
-
 class Ennemy(Entity):
+    ghost_template = pygame.Surface((u, u))
+    pygame.draw.circle(ghost_template, white, (u/2, u/2), u/2)
+    pygame.draw.rect(ghost_template, black, (0, u/2, u, u/2))
+    pygame.draw.polygon(ghost_template, white, (
+        (0, u/2), (0, u), (u/4, u*3/4), (u/2, u), (u*3/4, u*3/4), (u, u), (u, u/2)))
+
     def __init__(self, x, y, speed_divider, original_direction, color, name) -> None:
         super().__init__(x, y, speed_divider, original_direction)
         
-        self.surface.blit(ghost_template, (0, 0))
+        self.surface.blit(Ennemy.ghost_template, (0, 0))
         self.surface.fill(color, special_flags=pygame.BLEND_MULT)
         self.name = name
 
