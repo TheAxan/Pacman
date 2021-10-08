@@ -142,10 +142,15 @@ class Player(Entity):
                     [self.x + int(self.movement[0] / self.speed)]) == 1:
             self.movement = (0, 0)
     
+    def ghost_collision(self):
+        for entity in Entity.entities[1:]:
+            entity.player_collision()
+
     def full_cell_routine(self):
         self.update_direction()
         self.tunnel_warp()
         self.wall_stop()
+        self.ghost_collision()
     
 
 class Ennemy(Entity):
@@ -172,7 +177,7 @@ class Ennemy(Entity):
             self.next_move()
 
     def player_collision(self):
-        if (self.x, self.y) == (pac.x, pac.y):  # BUG: doesn't always trigger, probably want to reduce threshold
+        if self.rect.colliderect(pac.rect):
             print(f'Game over, {self.name} got you')  # maybe TODO game over screen
             exit()
             
