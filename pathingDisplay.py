@@ -1,8 +1,7 @@
 import pygame
 import random
 import tools
-import sys
-
+import pathing
 
 pygame.init()
 
@@ -30,7 +29,6 @@ black_square = create_square(black)
 orange_square = create_square(orange, 120)
 cyan_square = create_square(cyan, 120)
 outer_square = create_square(white)
-# pygame.draw.rect(outer_square, black, (0, 0, u, u), 1)
 
 arial = pygame.freetype.SysFont('arial', 10)
 
@@ -68,3 +66,9 @@ for y_counter, row in enumerate(random_array):
 screen.blit(background, (0,0))
 screen.blit(create_square(green, 120), (origin[0] * u, origin[1] * u))
 screen.blit(create_square(red, 120), (end[0] * u, end[1] * u))
+
+
+for i in pathing.path_finder(origin, end, random_array, (0, 3)):
+    screen.blit(cyan_square, (i[0]*u, i[1]*u), )
+pygame.display.flip()
+print(input())

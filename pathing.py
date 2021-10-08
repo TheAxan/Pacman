@@ -1,10 +1,5 @@
 import queue
-import pygame
-from pathingDisplay import *
-import pathingDisplay
 
-start_node = pathingDisplay.origin
-end_node = pathingDisplay.end
 
 def neighbors(center_node, array, accepted_neighbor_values):
     neighbors_set = set()
@@ -18,32 +13,45 @@ def neighbors(center_node, array, accepted_neighbor_values):
             pass
     return neighbors_set
 
+
 def heuristic_cost(a, b):
     return abs(a[0] - b[0]) + abs(a[1] - b[1])
 
-nodes_to_explore = queue.PriorityQueue()
-origin_node = dict()
-g_cost = dict()  # g cost: # of moves from the start_node
+coordinates = tuple[int, int]
+def path_finder(start_node: coordinates, end_node: coordinates, array: list[list[int]], navigatable_values: tuple[int] = 0) -> list[coordinates]:
+    """A* pathfinding from start_node to end_node in an array.
 
-nodes_to_explore.put([0, start_node])
-origin_node[start_node] = None
-g_cost[start_node] = 0
+    Args:
+        start_node (tuple of int): starting coordinates.
+        end_node (tuple of int): goal coordinates.
+        array (list of lists): array to pathfind through
+        navigatable_values (tuple of int) : node values in the array that can be navigated.
 
-while not nodes_to_explore.empty():
-    current_node = nodes_to_explore.get()
-    if current_node[1] == end_node:
-        break
-    for new_node in neighbors(current_node[1], random_array, (0, 3)):
-        new_g_cost = g_cost[current_node[1]] + 1
-        if new_node not in g_cost or new_g_cost < g_cost[new_node]:
-            g_cost[new_node] = new_g_cost
-            nodes_to_explore.put([new_g_cost + heuristic_cost(end_node, new_node), new_node])
-            origin_node[new_node] = current_node[1]
-            screen.blit(orange_square, (new_node[0]*u, new_node[1]*u))
+    Returns:
+        list: list of node coordinates from (including) start_node to (including) end_node.
+    """
+    nodes_to_explore = queue.PriorityQueue()
+    origin_node = dict()
+    g_cost = dict()  # g cost: # of moves from the start_node
+    nodes_to_explore.put((0, start_node))
+    origin_node[start_node] = None
+    g_cost[start_node] = 0
 
-current_node[1] = end_node
-while current_node[1] != start_node:
-    screen.blit(cyan_square, (current_node[1][0]*u, current_node[1][1]*u))
-    current_node[1] = origin_node[current_node[1]]
-    pygame.display.flip()
-print(input())
+    while not nodes_to_explore.empty():
+        current_node = nodes_to_explore.get()
+        if current_node[1] == end_node:
+            break
+        for new_node in neighbors(current_node[1], array, navigatable_values):
+            new_g_cost = g_cost[current_node[1]] + 1
+            if new_node not in g_cost or new_g_cost < g_cost[new_node]:
+                g_cost[new_node] = new_g_cost
+                nodes_to_explore.put([new_g_cost + heuristic_cost(end_node, new_node), new_node])
+                origin_node[new_node] = current_node[1]
+    
+    active_node = end_node
+    path = [active_node]
+    while active_node != start_node:
+        active_node = origin_node[active_node]
+        path.append(active_node)
+    
+    return reversed(path)
