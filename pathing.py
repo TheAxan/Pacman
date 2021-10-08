@@ -45,7 +45,7 @@ def path_finder(start_node: coordinates, end_node: coordinates, array: list[list
             new_g_cost = g_cost[current_node[1]] + 1
             if new_node not in g_cost or new_g_cost < g_cost[new_node]:
                 g_cost[new_node] = new_g_cost
-                nodes_to_explore.put([new_g_cost + heuristic_cost(end_node, new_node), new_node])
+                nodes_to_explore.put((new_g_cost + heuristic_cost(end_node, new_node), new_node))
                 origin_node[new_node] = current_node[1]
     
     active_node = end_node
