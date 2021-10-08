@@ -171,7 +171,7 @@ class Ennemy(Entity):
             self.next_move()
 
     def player_collision(self):
-        if (self.x, self.y) == (pac.x, pac.y):
+        if (self.x, self.y) == (pac.x, pac.y):  # BUG: doesn't always trigger, probably want to reduce threshold
             print(f'Game over, {self.name} got you')  # maybe TODO game over screen
             exit()
             
