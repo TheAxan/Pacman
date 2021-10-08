@@ -6,16 +6,16 @@ from pathingDisplay import *
 
 
 def neighbors(center):
-    neighbors_list = []
+    neighbors_set = set()
     for i, j in ((-1,0), (0,-1), (1,0), (0,1)):
         try:
             if center[0] + i < 0 or center[1] + j < 0:
                 raise Exception('negative index')
             if array[center[1] + j][center[0] + i] == 0 or array[center[1] + j][center[0]] == 3:
-                neighbors_list.append((center[0] + i, center[1] + j))
+                neighbors_set.add((center[0] + i, center[1] + j))
         except:
             pass
-    return neighbors_list
+    return neighbors_set
 
 def heuristic(a, b):
     return abs(a[0] - b[0]) + abs(a[1] - b[1])
