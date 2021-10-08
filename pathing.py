@@ -53,5 +53,5 @@ def path_finder(start_node: coordinates, end_node: coordinates, array: list[list
     while active_node != start_node:
         active_node = origin_node[active_node]
         path.append(active_node)
-    
-    return reversed(path)
+    path.reverse()
+    return path
