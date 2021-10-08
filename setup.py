@@ -1,4 +1,5 @@
 import pygame
+import pathing
 
 
 pygame.display.set_mode()  # The display must be initialized first or it might get the wrong res
@@ -167,15 +168,16 @@ class Ennemy(Entity):
 
     def corner_check(self):
         if map_grid[self.y][self.x] == 2:
-            self.pathing()
+            self.next_move()
 
     def player_collision(self):
         if (self.x, self.y) == (pac.x, pac.y):
             print(f'Game over, {self.name} got you')  # maybe TODO game over screen
             exit()
             
-    def pathing(self):  # TODO A* pathing
-        self.movement = (0, 0)
+    def next_move(self):  # TODO A* pathing target parameters
+        path = pathing.path_finder((self.x, self.y), (pac.x, pac.y), map_grid, (0, 2))
+        self.movement = ((path[1][0] - path[0][0]) * self.speed, (path[1][1] - path[0][1]) * self.speed)
 
 
 pac = Player(14, 23, 15, 'left', yellow)
