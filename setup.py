@@ -1,5 +1,6 @@
 import pygame
 import pathing
+import sys
 
 
 pygame.display.set_mode()  # The display must be initialized first or it might get the wrong res
@@ -179,7 +180,7 @@ class Ennemy(Entity):
     def player_collision(self):
         if self.rect.colliderect(pac.rect):
             print(f'Game over, {self.name} got you')  # maybe TODO game over screen
-            exit()
+            sys.exit()
             
     def next_move(self):  # TODO A* pathing target parameters
         path = pathing.path_finder((self.x, self.y), (pac.x, pac.y), map_grid, (0, 2))
