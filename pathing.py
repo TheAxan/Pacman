@@ -1,11 +1,11 @@
 import queue
 
 
-def neighbors(center_node, array, accepted_neighbor_values):
+def neighbors(center_node, array, accepted_neighbor_values, open_side_borders):
     neighbors_set = set()
     for i, j in ((-1,0), (0,-1), (1,0), (0,1)):
         try:
-            if center_node[0] + i < 0 or center_node[1] + j < 0:
+            if open_side_borders and (center_node[0] + i < 0 or center_node[1] + j < 0):
                 raise Exception('negative index')
             if array[center_node[1] + j][center_node[0] + i] in accepted_neighbor_values:
                 neighbors_set.add((center_node[0] + i, center_node[1] + j))
@@ -18,7 +18,8 @@ def heuristic_cost(a, b):
     return abs(a[0] - b[0]) + abs(a[1] - b[1])
 
 coordinates = tuple[int, int]
-def path_finder(start_node: coordinates, end_node: coordinates, array: list[list[int]], navigatable_values: tuple[int] = 0) -> list[coordinates]:
+def path_finder(start_node: coordinates, end_node: coordinates, array: list[list[int]], 
+                navigatable_values: tuple[int] = 0, open_side_borders: bool = True) -> list[coordinates]:
     """A* pathfinding from start_node to end_node in an array.
 
     Args:
@@ -26,6 +27,7 @@ def path_finder(start_node: coordinates, end_node: coordinates, array: list[list
         end_node (tuple of int): goal coordinates.
         array (list of lists): array to pathfind through
         navigatable_values (tuple of int) : node values in the array that can be navigated.
+        open_side_borders (bool): whether the array borders are open or closed.
 
     Returns:
         list: list of node coordinates from (including) start_node to (including) end_node.
@@ -39,7 +41,7 @@ def path_finder(start_node: coordinates, end_node: coordinates, array: list[list
 
     while not nodes_to_explore.empty():
         current_node = nodes_to_explore.get()
-        for new_node in neighbors(current_node[1], array, navigatable_values):
+        for new_node in neighbors(current_node[1], array, navigatable_values, open_side_borders):
             new_g_cost = g_cost[current_node[1]] + 1
             if new_node not in g_cost or new_g_cost < g_cost[new_node]:
                 g_cost[new_node] = new_g_cost
@@ -51,7 +53,7 @@ def path_finder(start_node: coordinates, end_node: coordinates, array: list[list
     active_node = end_node
     path = [active_node]
     while active_node != start_node:
-        active_node = origin_node[active_node]  # BUG KeyError due to negative index. Happens when you turn in tunnels
+        active_node = origin_node[active_node]
         path.append(active_node)
     path.reverse()
     return path

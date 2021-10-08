@@ -183,7 +183,7 @@ class Ennemy(Entity):
             sys.exit()
             
     def next_move(self):  # TODO A* pathing target parameters
-        path = pathing.path_finder((self.x, self.y), (pac.x, pac.y), map_grid, (0, 2))
+        path = pathing.path_finder((self.x, self.y), (pac.x, pac.y), map_grid, (0, 2), False)
         self.movement = ((path[1][0] - path[0][0]) * self.speed, (path[1][1] - path[0][1]) * self.speed)
 
 
