@@ -5,13 +5,13 @@ from pathingDisplay import *
 
 
 
-def neighbors(center):
+def neighbors(center, array, accepted_values):
     neighbors_set = set()
     for i, j in ((-1,0), (0,-1), (1,0), (0,1)):
         try:
             if center[0] + i < 0 or center[1] + j < 0:
                 raise Exception('negative index')
-            if array[center[1] + j][center[0] + i] == 0 or array[center[1] + j][center[0]] == 3:
+            if array[center[1] + j][center[0] + i] in accepted_values:
                 neighbors_set.add((center[0] + i, center[1] + j))
         except:
             pass
@@ -31,7 +31,7 @@ while not frontier.empty():
     current = frontier.get()
     if current[1] == end:
         break
-    for next in neighbors(current[1]):
+    for next in neighbors(current[1], random_array, (0, 3)):
         new_cost = cost_so_far[current[1]] + 1
         if next not in cost_so_far or new_cost < cost_so_far[next]:
             cost_so_far[next] = new_cost

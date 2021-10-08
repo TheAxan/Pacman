@@ -34,7 +34,7 @@ outer_square = create_square(white)
 
 arial = pygame.freetype.SysFont('arial', 10)
 
-array = tools.create_empty_array(array_size, array_size)
+random_array = tools.create_empty_array(array_size, array_size)
 
 class Point():
     def __init__(self, x, y) -> None:
@@ -47,10 +47,10 @@ origin = (random.randrange(array_size), random.randrange(array_size))
 end = (random.randrange(array_size), random.randrange(array_size))
 
 for point, value in ((origin, 2), (end, 3)):
-    array[point[1]][point[0]] = value
+    random_array[point[1]][point[0]] = value
 
 # randomly place walls
-for row in array:
+for row in random_array:
     for _ in range(int(array_size * 0.2)):
         while True:
             position = random.randrange(array_size)
@@ -59,10 +59,10 @@ for row in array:
                 break
 
 # make background
-for y_counter, row in enumerate(array):
+for y_counter, row in enumerate(random_array):
     for x_counter, cell in enumerate(row):
         background.blit(outer_square, (x_counter * u, y_counter * u))
-        if array[y_counter][x_counter] == 1:
+        if random_array[y_counter][x_counter] == 1:
             background.blit(black_square, (x_counter * u, y_counter * u))
 
 screen.blit(background, (0,0))
