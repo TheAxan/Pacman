@@ -5,14 +5,14 @@ from pathingDisplay import *
 
 
 
-def neighbors(center, array, accepted_values):
+def neighbors(center_point, array, accepted_neighbor_values):
     neighbors_set = set()
     for i, j in ((-1,0), (0,-1), (1,0), (0,1)):
         try:
-            if center[0] + i < 0 or center[1] + j < 0:
+            if center_point[0] + i < 0 or center_point[1] + j < 0:
                 raise Exception('negative index')
-            if array[center[1] + j][center[0] + i] in accepted_values:
-                neighbors_set.add((center[0] + i, center[1] + j))
+            if array[center_point[1] + j][center_point[0] + i] in accepted_neighbor_values:
+                neighbors_set.add((center_point[0] + i, center_point[1] + j))
         except:
             pass
     return neighbors_set
