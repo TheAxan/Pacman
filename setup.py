@@ -1,5 +1,6 @@
 import pygame
 import pathing
+import sys
 
 
 pygame.display.set_mode()  # The display must be initialized first or it might get the wrong res
@@ -38,9 +39,9 @@ default_map = [  # 0 is empty, 1 is a wall, 2 is a turning point
     [0, 2, 2, 2, 2, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 2, 2, 2, 2, 0],
     [0, 2, 2, 2, 2, 1, 0, 1, 1, 2, 0, 0, 2, 0, 0, 2, 0, 0, 2, 1, 1, 0, 1, 2, 2, 2, 2, 0],
     [0, 2, 2, 2, 2, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 2, 2, 2, 2, 0],
-    [1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 2, 2, 2, 2, 2, 2, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 2, 2, 2, 2, 2, 2, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1],
     [0, 0, 0, 0, 0, 0, 2, 0, 0, 2, 1, 2, 2, 2, 2, 2, 2, 1, 2, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 2, 2, 2, 2, 2, 2, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 2, 2, 2, 2, 2, 2, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1],
     [0, 2, 2, 2, 2, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 2, 2, 2, 2, 0],
     [0, 2, 2, 2, 2, 1, 0, 1, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 2, 1, 1, 0, 1, 2, 2, 2, 2, 0],
     [0, 2, 2, 2, 2, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 2, 2, 2, 2, 0],
@@ -71,11 +72,12 @@ for y_counter, row in enumerate(map_grid):
         if cell == 1:
             background.blit(square, (x_counter * u, y_counter * u)) # This draws the map
 
-entities = []  # to loop through routines
 
 class Entity:
+    entities = []  # to loop through routines
+    
     def __init__(self, x, y, speed_divider, original_direction) -> None:
-        entities.append(self)
+        Entity.entities.append(self)
         
         self.surface = pygame.Surface((u, u))
         self.surface.set_colorkey(black)
@@ -133,7 +135,8 @@ class Player(Entity):
         if self.input is not None:
             if not (map_grid[self.y + int(self.input[1] / self.speed)]  # cell to turn to isn't a wall
                             [self.x + int(self.input[0] / self.speed)]) == 1:
-                self.movement = self.input
+                if self.x in range(0, 27):
+                    self.movement = self.input
             self.input = None
     
     def wall_stop(self):
@@ -141,23 +144,28 @@ class Player(Entity):
                     [self.x + int(self.movement[0] / self.speed)]) == 1:
             self.movement = (0, 0)
     
+    def ghost_collision(self):
+        for entity in Entity.entities[1:]:
+            entity.player_collision()
+
     def full_cell_routine(self):
         self.update_direction()
         self.tunnel_warp()
         self.wall_stop()
+        self.ghost_collision()
     
 
-ghost_template = pygame.Surface((u, u))
-pygame.draw.circle(ghost_template, white, (u/2, u/2), u/2)
-pygame.draw.rect(ghost_template, black, (0, u/2, u, u/2))
-pygame.draw.polygon(ghost_template, white, (
-    (0, u/2), (0, u), (u/4, u*3/4), (u/2, u), (u*3/4, u*3/4), (u, u), (u, u/2)))
-
 class Ennemy(Entity):
+    ghost_template = pygame.Surface((u, u))
+    pygame.draw.circle(ghost_template, white, (u/2, u/2), u/2)
+    pygame.draw.rect(ghost_template, black, (0, u/2, u, u/2))
+    pygame.draw.polygon(ghost_template, white, (
+        (0, u/2), (0, u), (u/4, u*3/4), (u/2, u), (u*3/4, u*3/4), (u, u), (u, u/2)))
+
     def __init__(self, x, y, speed_divider, original_direction, color, name) -> None:
         super().__init__(x, y, speed_divider, original_direction)
         
-        self.surface.blit(ghost_template, (0, 0))
+        self.surface.blit(Ennemy.ghost_template, (0, 0))
         self.surface.fill(color, special_flags=pygame.BLEND_MULT)
         self.name = name
 
@@ -171,12 +179,12 @@ class Ennemy(Entity):
             self.next_move()
 
     def player_collision(self):
-        if (self.x, self.y) == (pac.x, pac.y):
+        if self.rect.colliderect(pac.rect):
             print(f'Game over, {self.name} got you')  # maybe TODO game over screen
-            exit()
+            sys.exit()
             
     def next_move(self):  # TODO A* pathing target parameters
-        path = pathing.path_finder((self.x, self.y), (pac.x, pac.y), map_grid, (0, 2))
+        path = pathing.path_finder((self.x, self.y), (pac.x, pac.y), map_grid, (0, 2), False)
         self.movement = ((path[1][0] - path[0][0]) * self.speed, (path[1][1] - path[0][1]) * self.speed)
 
 
