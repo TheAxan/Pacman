@@ -32,7 +32,7 @@ original_map = [  # 0 is empty, 1 is a wall, 2 is a turning point
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 ]
 
-def corner_finder(map):
+def corner_finder(array):
     new_map = []
     for y_counter, row in enumerate(map):
         new_row = []
@@ -44,10 +44,10 @@ def corner_finder(map):
                     if x_counter - 1 < 0 or y_counter -1 < 0:  # exception in case of future asymetric tunnels
                         raise Exception('negative index')
                     
-                    up = not map[y_counter - 1][x_counter]
-                    left = not map[y_counter][x_counter - 1]
-                    right = not map[y_counter][x_counter + 1]
-                    down = not map[y_counter + 1][x_counter]
+                    up = not array[y_counter - 1][x_counter]
+                    left = not array[y_counter][x_counter - 1]
+                    right = not array[y_counter][x_counter + 1]
+                    down = not array[y_counter + 1][x_counter]
 
                     if (left and (up or down)) or (right and (up or down)):
                         new_row.append(2)
