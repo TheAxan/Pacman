@@ -32,7 +32,7 @@ original_map = [  # 0 is empty, 1 is a wall, 2 is a turning point
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 ]
 
-def corner_finder(array):
+def turn_finder(array):
     new_map = []
     for y_counter, row in enumerate(map):
         new_row = []
@@ -58,9 +58,11 @@ def corner_finder(array):
         new_map.append(new_row)
     return new_map
 
+
 def print_array(array):
     for row in array:
         print(str(row) + ',')
+
 
 def create_empty_array(width, height):
     return [[0] * width for _ in range(height)]
