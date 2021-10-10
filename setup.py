@@ -25,7 +25,8 @@ cyan = 0, 230, 230
 pink = 255, 179, 255
 
 
-default_map = [  # 0 is empty, 1 is a wall, 2 is a turning point
+default_map = [
+    # 0 is empty, 1 is a wall, 2 is a turning point, 3 is a wall corner, 4 is an unreachable cell
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
     [1, 2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 2, 1, 1, 2, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 2, 1],
     [1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1],
@@ -184,7 +185,7 @@ class Ennemy(Entity):
             sys.exit()
             
     def next_move(self):  # TODO A* pathing target parameters
-        path = pathing.path_finder((self.x, self.y), (pak.x, pak.y), map_grid, (0, 2), False)
+        path = pathing.path_finder((self.x, self.y), (pak.x, pak.y), map_grid, (1, 3), False)
         self.movement = ((path[1][0] - path[0][0]) * self.speed, (path[1][1] - path[0][1]) * self.speed)
 
 
