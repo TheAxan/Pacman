@@ -179,16 +179,16 @@ class Ennemy(Entity):
             self.next_move()
 
     def player_collision(self):
-        if self.rect.colliderect(pac.rect):
+        if self.rect.colliderect(pak.rect):
             print(f'Game over, {self.name} got you')  # maybe TODO game over screen
             sys.exit()
             
     def next_move(self):  # TODO A* pathing target parameters
-        path = pathing.path_finder((self.x, self.y), (pac.x, pac.y), map_grid, (0, 2), False)
+        path = pathing.path_finder((self.x, self.y), (pak.x, pak.y), map_grid, (0, 2), False)
         self.movement = ((path[1][0] - path[0][0]) * self.speed, (path[1][1] - path[0][1]) * self.speed)
 
 
-pac = Player(14, 23, 15, 'left', yellow)
+pak = Player(14, 23, 15, 'left', yellow)
 blinky = Ennemy(17, 23, 18, 'left', red, 'Blinky')
 inky = Ennemy(22, 14, 18, 'right', cyan, 'Inky')
 pinky = Ennemy(16, 29, 18, 'right', pink, 'Pinky')

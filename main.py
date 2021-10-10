@@ -9,11 +9,11 @@ while True:
     for event in pygame.event.get():
         if event.type == pygame.KEYDOWN:
             if event.key in (pygame.K_LEFT, pygame.K_UP, pygame.K_RIGHT, pygame.K_DOWN):
-                setup.pac.input = {
-                    pygame.K_LEFT: (-setup.pac.speed, 0),
-                    pygame.K_UP: (0, -setup.pac.speed),
-                    pygame.K_RIGHT: (setup.pac.speed, 0),
-                    pygame.K_DOWN: (0, setup.pac.speed),
+                setup.pak.input = {
+                    pygame.K_LEFT: (-setup.pak.speed, 0),
+                    pygame.K_UP: (0, -setup.pak.speed),
+                    pygame.K_RIGHT: (setup.pak.speed, 0),
+                    pygame.K_DOWN: (0, setup.pak.speed),
                 }[event.key]
             elif event.key is pygame.K_ESCAPE:
                 sys.exit()
