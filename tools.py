@@ -34,7 +34,7 @@ original_map = [  # 0 is empty, 1 is a wall, 2 is a turning point
 
 def turn_finder(array):
     new_map = []
-    for y_counter, row in enumerate(map):
+    for y_counter, row in enumerate(array):
         new_row = []
         for x_counter, cell in enumerate(row):
             if cell == 1:
