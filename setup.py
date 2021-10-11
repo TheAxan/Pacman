@@ -175,7 +175,7 @@ class Ennemy(Entity):
         self.corner_check()
         self.tunnel_warp()
 
-    def corner_check(self):
+    def intersection_check(self):
         if map_grid[self.y][self.x] == 2:
             self.next_move()
 
