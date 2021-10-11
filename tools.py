@@ -42,7 +42,7 @@ def unreachable_finder(array, start_node):
 
     while not nodes_to_explore.empty():
         current_node = nodes_to_explore.get()
-        for new_node in pathing.neighbors(current_node, array, (1, 3), True):
+        for new_node in pathing.neighbors(current_node, array, (1, 3)):
             if new_node not in explored_nodes:
                 nodes_to_explore.put(new_node)
             explored_nodes.add(current_node)

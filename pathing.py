@@ -1,12 +1,10 @@
 import queue
 
 
-def neighbors(center_node, array, wall_values, open_side_borders):
+def neighbors(center_node, array, wall_values):
     neighbors_set = set()
     for i, j in ((-1,0), (0,-1), (1,0), (0,1)):
         try:
-            if open_side_borders and (center_node[0] + i < 0 or center_node[1] + j < 0):
-                raise Exception('negative index')
             if array[center_node[1] + j][center_node[0] + i] not in wall_values:
                 neighbors_set.add((center_node[0] + i, center_node[1] + j))
         except:
@@ -18,8 +16,10 @@ def heuristic_cost(a, b):
     return abs(a[0] - b[0]) + abs(a[1] - b[1])
 
 coordinates = tuple[int, int]
-def path_finder(start_node: coordinates, end_node: coordinates, array: list[list[int]], 
-                wall_values: tuple[int] = 1, open_side_borders: bool = True) -> list[coordinates]:
+def path_finder(start_node: coordinates, end_node: coordinates, 
+                array: list[list[int]], 
+                wall_values: tuple[int] = 1
+                ) -> list[coordinates]:
     """A* pathfinding from start_node to end_node in an array.
 
     Args:
@@ -27,7 +27,6 @@ def path_finder(start_node: coordinates, end_node: coordinates, array: list[list
         end_node (tuple of int): goal coordinates.
         array (list of lists): array to pathfind through
         wall_values (tuple of int) : node values in the array that can't be navigated.
-        open_side_borders (bool): whether the array borders are open or closed.
 
     Returns:
         list: list of node coordinates from (including) start_node to (including) end_node.
@@ -41,7 +40,7 @@ def path_finder(start_node: coordinates, end_node: coordinates, array: list[list
 
     while not nodes_to_explore.empty():
         current_node = nodes_to_explore.get()
-        for new_node in neighbors(current_node[1], array, wall_values, open_side_borders):
+        for new_node in neighbors(current_node[1], array, wall_values):
             new_g_cost = g_cost[current_node[1]] + 1
             if new_node not in g_cost or new_g_cost < g_cost[new_node]:
                 g_cost[new_node] = new_g_cost
