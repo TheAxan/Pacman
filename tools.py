@@ -56,7 +56,8 @@ def unreachable_finder(array, start_node):
         for y, row in enumerate(array)
     ]
 
-def is_intersection(i, x, y, array):
+
+def intersection_check(i, x, y, array):
     if i in (1, 3, 4):
         return i
     elif len(pathing.neighbors((x, y), array, (1, 3))) >= 3:
@@ -68,7 +69,7 @@ def is_intersection(i, x, y, array):
 def intersection_finder(array):
     return[
         [
-            is_intersection(i, x, y, array)
+            intersection_check(i, x, y, array)
             for x, i in enumerate(row)
         ]
         for y, row in enumerate(array)
@@ -80,6 +81,6 @@ def print_array(array):
         print(str(row) + ',')
 
 
-def create_empty_array(width, height):
+def empty_array(width, height):
     return [[0] * width for _ in range(height)]
 
