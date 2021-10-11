@@ -2,11 +2,12 @@ import queue
 
 
 def neighbors(center_node, array, wall_values):
+    x, y = center_node
     neighbors_set = set()
-    for i, j in ((-1,0), (0,-1), (1,0), (0,1)):
+    for i, j in ((x-1, y), (x, y-1), (x+1, y), (x, y+1)):
         try:
-            if array[center_node[1] + j][center_node[0] + i] not in wall_values:
-                neighbors_set.add((center_node[0] + i, center_node[1] + j))
+            if array[j][i] not in wall_values:
+                neighbors_set.add((i, j))
         except:
             pass
     return neighbors_set
@@ -14,6 +15,7 @@ def neighbors(center_node, array, wall_values):
 
 def heuristic_cost(a, b):
     return abs(a[0] - b[0]) + abs(a[1] - b[1])
+
 
 coordinates = tuple[int, int]
 def path_finder(start_node: coordinates, end_node: coordinates, 
