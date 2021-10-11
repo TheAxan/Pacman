@@ -25,37 +25,38 @@ cyan = 0, 230, 230
 pink = 255, 179, 255
 
 
-default_map = [  # 0 is empty, 1 is a wall, 2 is a turning point
+default_map = [
+    # 0 is empty, 1 is a wall, 2 is a turning point, 3 is a wall corner, 4 is an unreachable cell
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 2, 1, 1, 2, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 2, 1],
+    [1, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 1],
     [1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1],
     [1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1],
     [1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1],
     [1, 2, 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 2, 0, 0, 2, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0, 2, 1],
     [1, 0, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 0, 1],
     [1, 0, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 0, 1],
-    [1, 2, 0, 0, 0, 0, 2, 1, 1, 2, 0, 0, 2, 1, 1, 2, 0, 0, 2, 1, 1, 2, 0, 0, 0, 0, 2, 1],
+    [1, 0, 0, 0, 0, 0, 2, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 2, 0, 0, 0, 0, 0, 1],
     [1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1],
-    [0, 2, 2, 2, 2, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 2, 2, 2, 2, 0],
-    [0, 2, 2, 2, 2, 1, 0, 1, 1, 2, 0, 0, 2, 0, 0, 2, 0, 0, 2, 1, 1, 0, 1, 2, 2, 2, 2, 0],
-    [0, 2, 2, 2, 2, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 2, 2, 2, 2, 0],
-    [1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 2, 2, 2, 2, 2, 2, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [0, 0, 0, 0, 0, 0, 2, 0, 0, 2, 1, 2, 2, 2, 2, 2, 2, 1, 2, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 2, 2, 2, 2, 2, 2, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [0, 2, 2, 2, 2, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 2, 2, 2, 2, 0],
-    [0, 2, 2, 2, 2, 1, 0, 1, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 2, 1, 1, 0, 1, 2, 2, 2, 2, 0],
-    [0, 2, 2, 2, 2, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 2, 2, 2, 2, 0],
+    [4, 4, 4, 4, 4, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 4, 4, 4, 4, 4],
+    [4, 4, 4, 4, 4, 1, 0, 1, 1, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 1, 1, 0, 1, 4, 4, 4, 4, 4],
+    [4, 4, 4, 4, 4, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 4, 4, 4, 4, 4],
+    [1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 4, 4, 4, 4, 4, 4, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+    [0, 0, 0, 0, 0, 0, 2, 0, 0, 2, 1, 4, 4, 4, 4, 4, 4, 1, 2, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 4, 4, 4, 4, 4, 4, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+    [4, 4, 4, 4, 4, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 4, 4, 4, 4, 4],
+    [4, 4, 4, 4, 4, 1, 0, 1, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 2, 1, 1, 0, 1, 4, 4, 4, 4, 4],
+    [4, 4, 4, 4, 4, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 4, 4, 4, 4, 4],
     [1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1],
-    [1, 2, 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 2, 1, 1, 2, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0, 2, 1],
+    [1, 0, 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 1, 1, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0, 0, 1],
     [1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1],
     [1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1],
-    [1, 2, 0, 2, 1, 1, 2, 0, 0, 2, 0, 0, 2, 0, 0, 2, 0, 0, 2, 0, 0, 2, 1, 1, 2, 0, 2, 1],
+    [1, 0, 0, 0, 1, 1, 2, 0, 0, 2, 0, 0, 2, 0, 0, 2, 0, 0, 2, 0, 0, 2, 1, 1, 0, 0, 0, 1],
     [1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1],
     [1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1],
-    [1, 2, 0, 2, 0, 0, 2, 1, 1, 2, 0, 0, 2, 1, 1, 2, 0, 0, 2, 1, 1, 2, 0, 0, 2, 0, 2, 1],
+    [1, 0, 0, 2, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 2, 0, 0, 1],
     [1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1],
     [1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1],
-    [1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
 ]  # in python 3.9 my tests showed list access to be much faster than tuple acces, in 3.8 tuples were slightly faster
 
@@ -116,6 +117,14 @@ class Entity:
             elif self.x == 28:
                 self.rect.x = -1 * u
     
+    def wall_check(self):
+        if (map_grid[self.y + int(self.movement[1] / self.speed)]  # cell ahead is a wall
+                    [self.x + int(self.movement[0] / self.speed)]) == 1:
+            self.wall_reaction()
+
+    def wall_reaction():
+        pass # defined in subclass
+
     def full_cell_check(self):
         if self.x == self.rect.x / u and self.y == self.rect.y / u:  # on a full cell
             self.full_cell_routine()
@@ -139,10 +148,8 @@ class Player(Entity):
                     self.movement = self.input
             self.input = None
     
-    def wall_stop(self):
-        if (map_grid[self.y + int(self.movement[1] / self.speed)]  # cell ahead is a wall
-                    [self.x + int(self.movement[0] / self.speed)]) == 1:
-            self.movement = (0, 0)
+    def wall_reaction(self):
+        self.movement = (0, 0)
     
     def ghost_collision(self):
         for entity in Entity.entities[1:]:
@@ -151,7 +158,7 @@ class Player(Entity):
     def full_cell_routine(self):
         self.update_direction()
         self.tunnel_warp()
-        self.wall_stop()
+        self.wall_check()
         self.ghost_collision()
     
 
@@ -171,12 +178,27 @@ class Ennemy(Entity):
 
     def full_cell_routine(self):
         self.player_collision()
-        self.corner_check()
+        self.intersection_check()
         self.tunnel_warp()
 
-    def corner_check(self):
+    def intersection_check(self):
         if map_grid[self.y][self.x] == 2:
             self.next_move()
+        else:
+            self.wall_check()
+    
+    def wall_reaction(self):
+        if self.movement[0] == 0:
+            if map_grid[self.y][self.x + 1] == 1:
+                self.movement = (-self.speed, 0)
+            else:
+                self.movement = (self.speed, 0)
+        elif self.movement[1] == 0:
+            if map_grid[self.y + 1][self.x] == 1:
+                self.movement = (0, -self.speed)
+            else:
+                self.movement = (0, self.speed)
+        
 
     def player_collision(self):
         if self.rect.colliderect(pak.rect):
@@ -184,7 +206,7 @@ class Ennemy(Entity):
             sys.exit()
             
     def next_move(self):  # TODO A* pathing target parameters
-        path = pathing.path_finder((self.x, self.y), (pak.x, pak.y), map_grid, (0, 2), False)
+        path = pathing.path_finder((self.x, self.y), (pak.x, pak.y), map_grid, (1, 3))
         self.movement = ((path[1][0] - path[0][0]) * self.speed, (path[1][1] - path[0][1]) * self.speed)
 
 

@@ -1,14 +1,13 @@
 import queue
 
 
-def neighbors(center_node, array, accepted_neighbor_values, open_side_borders):
+def neighbors(center_node, array, wall_values):
+    x, y = center_node
     neighbors_set = set()
-    for i, j in ((-1,0), (0,-1), (1,0), (0,1)):
+    for i, j in ((x-1, y), (x, y-1), (x+1, y), (x, y+1)):
         try:
-            if open_side_borders and (center_node[0] + i < 0 or center_node[1] + j < 0):
-                raise Exception('negative index')
-            if array[center_node[1] + j][center_node[0] + i] in accepted_neighbor_values:
-                neighbors_set.add((center_node[0] + i, center_node[1] + j))
+            if array[j][i] not in wall_values:
+                neighbors_set.add((i, j))
         except:
             pass
     return neighbors_set
@@ -17,17 +16,19 @@ def neighbors(center_node, array, accepted_neighbor_values, open_side_borders):
 def heuristic_cost(a, b):
     return abs(a[0] - b[0]) + abs(a[1] - b[1])
 
+
 coordinates = tuple[int, int]
-def path_finder(start_node: coordinates, end_node: coordinates, array: list[list[int]], 
-                navigatable_values: tuple[int] = 0, open_side_borders: bool = True) -> list[coordinates]:
+def path_finder(start_node: coordinates, end_node: coordinates, 
+                array: list[list[int]], 
+                wall_values: tuple[int] = 1
+                ) -> list[coordinates]:
     """A* pathfinding from start_node to end_node in an array.
 
     Args:
         start_node (tuple of int): starting coordinates.
         end_node (tuple of int): goal coordinates.
         array (list of lists): array to pathfind through
-        navigatable_values (tuple of int) : node values in the array that can be navigated.
-        open_side_borders (bool): whether the array borders are open or closed.
+        wall_values (tuple of int) : node values in the array that can't be navigated.
 
     Returns:
         list: list of node coordinates from (including) start_node to (including) end_node.
@@ -41,7 +42,7 @@ def path_finder(start_node: coordinates, end_node: coordinates, array: list[list
 
     while not nodes_to_explore.empty():
         current_node = nodes_to_explore.get()
-        for new_node in neighbors(current_node[1], array, navigatable_values, open_side_borders):
+        for new_node in neighbors(current_node[1], array, wall_values):
             new_g_cost = g_cost[current_node[1]] + 1
             if new_node not in g_cost or new_g_cost < g_cost[new_node]:
                 g_cost[new_node] = new_g_cost
