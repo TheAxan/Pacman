@@ -1,3 +1,6 @@
+import queue
+import pathing
+
 original_map = [  # 0 is empty, 1 is a wall, 2 is a turning point
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
@@ -32,12 +35,34 @@ original_map = [  # 0 is empty, 1 is a wall, 2 is a turning point
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 ]
 
+def unreachable_finder(array, start_node):
+    nodes_to_explore = queue.Queue()
+    explored_nodes = set()
+    nodes_to_explore.put(start_node)
+
+    while not nodes_to_explore.empty():
+        current_node = nodes_to_explore.get()
+        for new_node in pathing.neighbors(current_node, array, (1, 3), True):
+            if new_node not in explored_nodes:
+                nodes_to_explore.put(new_node)
+            explored_nodes.add(current_node)
+
+    return [
+        [
+            4 if (x, y) not in explored_nodes and i not in (1, 3)
+            else i
+            for x, i in enumerate(row)
+        ]
+        for y, row in enumerate(array)
+    ]
+
+
 def turn_finder(array):
     new_map = []
     for y_counter, row in enumerate(array):
         new_row = []
         for x_counter, cell in enumerate(row):
-            if cell == 1:
+            if cell in (1, 3, 4):
                 new_row.append(cell)
             else:
                 try:
@@ -66,3 +91,9 @@ def print_array(array):
 
 def create_empty_array(width, height):
     return [[0] * width for _ in range(height)]
+
+print_array(original_map)
+print()
+print_array(unreachable_finder(original_map, (1,1)))
+print()
+print_array(turn_finder(unreachable_finder(original_map, (1,1))))
