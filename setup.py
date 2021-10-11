@@ -117,6 +117,14 @@ class Entity:
             elif self.x == 28:
                 self.rect.x = -1 * u
     
+    def wall_check(self):
+        if (map_grid[self.y + int(self.movement[1] / self.speed)]  # cell ahead is a wall
+                    [self.x + int(self.movement[0] / self.speed)]) == 1:
+            self.wall_reaction()
+
+    def wall_reaction():
+        pass # defined in subclass
+
     def full_cell_check(self):
         if self.x == self.rect.x / u and self.y == self.rect.y / u:  # on a full cell
             self.full_cell_routine()
@@ -140,10 +148,8 @@ class Player(Entity):
                     self.movement = self.input
             self.input = None
     
-    def wall_stop(self):
-        if (map_grid[self.y + int(self.movement[1] / self.speed)]  # cell ahead is a wall
-                    [self.x + int(self.movement[0] / self.speed)]) == 1:
-            self.movement = (0, 0)
+    def wall_reaction(self):
+        self.movement = (0, 0)
     
     def ghost_collision(self):
         for entity in Entity.entities[1:]:
@@ -152,7 +158,7 @@ class Player(Entity):
     def full_cell_routine(self):
         self.update_direction()
         self.tunnel_warp()
-        self.wall_stop()
+        self.wall_check()
         self.ghost_collision()
     
 
@@ -172,12 +178,27 @@ class Ennemy(Entity):
 
     def full_cell_routine(self):
         self.player_collision()
-        self.corner_check()
+        self.intersection_check()
         self.tunnel_warp()
 
     def intersection_check(self):
         if map_grid[self.y][self.x] == 2:
             self.next_move()
+        else:
+            self.wall_check()
+    
+    def wall_reaction(self):
+        if self.movement[0] == 0:
+            if map_grid[self.y][self.x + 1] == 1:
+                self.movement = (-self.speed, 0)
+            else:
+                self.movement = (self.speed, 0)
+        elif self.movement[1] == 0:
+            if map_grid[self.y + 1][self.x] == 1:
+                self.movement = (0, -self.speed)
+            else:
+                self.movement = (0, self.speed)
+        
 
     def player_collision(self):
         if self.rect.colliderect(pak.rect):
