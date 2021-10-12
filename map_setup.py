@@ -38,13 +38,13 @@ default_map: list[list[int]] = [ # 0 is empty, 1 is a wall, 2 is a turning point
 
 map_grid = default_map  # this is to have various maps in the future
 
-background = pygame.Surface((28 * s.u, 31 * s.u))
+background = pygame.Surface((28 * s.cu, 31 * s.cu))
 
-square = pygame.Surface((s.u, s.u))
+square = pygame.Surface((s.cu, s.cu))
 square.fill(s.blue)
-pygame.draw.rect(square, s.dark_grey, (0, 0, s.u, s.u), 10)
+pygame.draw.rect(square, s.black, (0, 0, s.cu, s.cu), int(s.gu/3))
 
 for y_counter, row in enumerate(map_grid):
     for x_counter, cell in enumerate(row):
         if cell == 1:
-            background.blit(square, (x_counter * s.u, y_counter * s.u)) # This draws the map
+            background.blit(square, (x_counter * s.cu, y_counter * s.cu)) # This draws the map
