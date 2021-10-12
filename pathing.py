@@ -66,3 +66,18 @@ def A_star(start_node: coordinates, end_node: coordinates,
         path.append(active_node)
     path.reverse()
     return path
+
+
+def breadth_first_map(array, start_node):
+    nodes_to_explore = queue.Queue()
+    explored_nodes = set()
+    nodes_to_explore.put(start_node)
+
+    while not nodes_to_explore.empty():
+        current_node = nodes_to_explore.get()
+        for new_node in neighbors(current_node, array, (1, 3)):
+            if new_node not in explored_nodes:
+                nodes_to_explore.put(new_node)
+            explored_nodes.add(current_node)
+    
+    return explored_nodes

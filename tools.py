@@ -1,4 +1,3 @@
-import queue
 import pathing
 
 original_map = [  # 0 is empty, 1 is a wall, 2 is a turning point
@@ -36,21 +35,11 @@ original_map = [  # 0 is empty, 1 is a wall, 2 is a turning point
 ]
 
 
-def unreachable_finder(array, start_node):
-    nodes_to_explore = queue.Queue()
-    explored_nodes = set()
-    nodes_to_explore.put(start_node)
-
-    while not nodes_to_explore.empty():
-        current_node = nodes_to_explore.get()
-        for new_node in pathing.neighbors(current_node, array, (1, 3)):
-            if new_node not in explored_nodes:
-                nodes_to_explore.put(new_node)
-            explored_nodes.add(current_node)
-
+def unreachable_mapper(array, start_node):
+    grid_map = pathing.breadth_first_map(array, start_node)
     return [
         [
-            4 if (x, y) not in explored_nodes and i not in (1, 3)
+            4 if (x, y) not in grid_map and i not in (1, 3)
             else i
             for x, i in enumerate(row)
         ]
