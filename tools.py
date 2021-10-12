@@ -58,19 +58,18 @@ def unreachable_finder(array, start_node):
     ]
 
 
-def intersection_check(i, x, y, array):
-    if i in (1, 3, 4):
-        return i
-    elif len(pathing.neighbors((x, y), array, (1, 3))) >= 3:
-        return 2
-    else:
-        return 0
-
-
-def intersection_finder(array):
+def intersection_mapper(array):
+    def intersection_check(i, x, y):  # The nested function is bad because of the array lookup
+        if i in (1, 3, 4):
+            return i
+        elif len(pathing.neighbors((x, y), array, (1, 3))) >= 3:
+            return 2
+        else:
+            return 0
+    
     return[
         [
-            intersection_check(i, x, y, array)
+            intersection_check(i, x, y)
             for x, i in enumerate(row)
         ]
         for y, row in enumerate(array)
