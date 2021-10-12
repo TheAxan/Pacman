@@ -162,6 +162,14 @@ class Player(Entity):
         self.wall_check()
         self.ghost_collision()
     
+    def input_handling(self, input):
+        self.input = {
+            pygame.K_LEFT: (-self.speed, 0),
+            pygame.K_UP: (0, -self.speed),
+            pygame.K_RIGHT: (self.speed, 0),
+            pygame.K_DOWN: (0, self.speed),
+        }[input]
+    
 
 class Ennemy(Entity):
     ghost_template = pygame.Surface((u, u))
