@@ -1,6 +1,7 @@
 import pygame
 import pathing
 import sys
+import copy
 
 
 pygame.display.set_mode()  # The display must be initialized first or it might get the wrong res
@@ -199,14 +200,18 @@ class Ennemy(Entity):
             else:
                 self.movement = (0, self.speed)
         
-
     def player_collision(self):
         if self.rect.colliderect(pak.rect):
             print(f'Game over, {self.name} got you')  # maybe TODO game over screen
             sys.exit()
             
+    def no_backtrack(self, array: list[list[int]]):
+        temp_array = copy.deepcopy(array)
+        temp_array[self.y - int(self.movement[1] / self.speed)][self.x - int(self.movement[0] / self.speed)] = 1
+        return temp_array
+    
     def next_move(self):  # TODO A* pathing target parameters
-        path = pathing.path_finder((self.x, self.y), (pak.x, pak.y), map_grid, (1, 3))
+        path = pathing.path_finder((self.x, self.y), (pak.x, pak.y), self.no_backtrack(map_grid), (1, 3))
         self.movement = ((path[1][0] - path[0][0]) * self.speed, (path[1][1] - path[0][1]) * self.speed)
 
 
