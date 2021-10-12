@@ -35,6 +35,7 @@ original_map = [  # 0 is empty, 1 is a wall, 2 is a turning point
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 ]
 
+
 def unreachable_finder(array, start_node):
     nodes_to_explore = queue.Queue()
     explored_nodes = set()

@@ -5,7 +5,8 @@ import copy
 
 
 pygame.display.set_mode()  # The display must be initialized first or it might get the wrong res
-u = {  # cells are u lenght squares
+u: int = {
+    # cells are u lenght squares
     # u must be even or the graphics looks off and wall_stop breaks 
     # because full_cell_check breaks because the resulting speed jumps over full cells.
     # Trying to account for the jump is ressource intensive since the method runs every frame
@@ -26,8 +27,7 @@ cyan = 0, 230, 230
 pink = 255, 179, 255
 
 
-default_map = [
-    # 0 is empty, 1 is a wall, 2 is a turning point, 3 is a wall corner, 4 is an unreachable cell
+default_map: list[list[int]] = [ # 0 is empty, 1 is a wall, 2 is a turning point, 3 is a wall corner, 4 is an unreachable cell
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
     [1, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 1],
     [1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1],
@@ -76,9 +76,9 @@ for y_counter, row in enumerate(map_grid):
 
 
 class Entity:
-    entities = []  # to loop through routines
+    entities: list[object] = []  # to loop through routines
     
-    def __init__(self, x, y, speed_divider, original_direction) -> None:
+    def __init__(self, x: int, y: int, speed_divider: int, original_direction: str) -> None:
         Entity.entities.append(self)
         
         self.surface = pygame.Surface((u, u))
@@ -90,11 +90,11 @@ class Entity:
         self.rect.y = y * u
 
         # self.x is the array x
-        self.x = x
-        self.y = y
+        self.x: int = x
+        self.y: int = y
         
-        self.speed = u / speed_divider
-        self.movement = {
+        self.speed: float = u / speed_divider
+        self.movement: tuple[int | float] = {
             'left': (-self.speed, 0),
             'up': (0, -self.speed),
             'right': (self.speed, 0),
@@ -135,10 +135,10 @@ class Entity:
 
 
 class Player(Entity):
-    def __init__(self, x, y, speed_divider, original_direction, color) -> None:
+    def __init__(self, x: int, y: int, speed_divider: int, original_direction: str, color: tuple[int]) -> None:
         super().__init__(x, y, speed_divider, original_direction)
         
-        self.input = None
+        self.input: tuple[int | float] | None = None
         pygame.draw.circle(self.surface, color, (u/2, u/2), u/2)
     
     def update_direction(self):
@@ -170,7 +170,7 @@ class Ennemy(Entity):
     pygame.draw.polygon(ghost_template, white, (
         (0, u/2), (0, u), (u/4, u*3/4), (u/2, u), (u*3/4, u*3/4), (u, u), (u, u/2)))
 
-    def __init__(self, x, y, speed_divider, original_direction, color, name) -> None:
+    def __init__(self, x: int, y: int, speed_divider: int, original_direction: str, color: tuple[int], name: str) -> None:
         super().__init__(x, y, speed_divider, original_direction)
         
         self.surface.blit(Ennemy.ghost_template, (0, 0))
@@ -211,7 +211,7 @@ class Ennemy(Entity):
         return temp_array
     
     def next_move(self):  # TODO A* pathing target parameters
-        path = pathing.path_finder((self.x, self.y), (pak.x, pak.y), self.no_backtrack(map_grid), (1, 3))
+        path = pathing.A_star((self.x, self.y), (pak.x, pak.y), self.no_backtrack(map_grid), (1, 3))
         self.movement = ((path[1][0] - path[0][0]) * self.speed, (path[1][1] - path[0][1]) * self.speed)
 
 
