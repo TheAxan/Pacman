@@ -1,8 +1,8 @@
 import pygame
-
+from maps import default_map as map_grid
 
 pygame.display.set_mode()  # The display must be initialized first or it might get the wrong res
-u: int = {
+cu: int = {
     # cells are u lenght squares
     # u must be even or the graphics looks off and wall_stop breaks
     # * additionnal note: it doesn't work if u <= 16 BUG and the speed is all messed up
@@ -12,7 +12,11 @@ u: int = {
     (1080, 1920): 38,
     (2560, 1440): 44,
 }.get((pygame.display.Info().current_w, pygame.display.Info().current_h), 30)
-screen = pygame.display.set_mode((28 * u, 31 * u), flags=pygame.NOFRAME)
+screen = pygame.display.set_mode((28 * cu, 31 * cu), flags=pygame.NOFRAME)
+
+gu = cu * 1.5
+# gu is short for graphical_unit, cu for cell_unit
+# the long names would make most functions absurdly long (especially for gu drawings)
 
 white = 255, 255, 255
 black = 0, 0, 0
@@ -24,4 +28,13 @@ orange = 255, 153, 0
 cyan = 0, 230, 230
 pink = 255, 179, 255
 
+background = pygame.Surface((28 * cu, 31 * cu))
 
+square = pygame.Surface((cu, cu))
+square.fill(blue)
+pygame.draw.rect(square, black, (0, 0, cu, cu), int(gu/3))
+
+for y_counter, row in enumerate(map_grid):
+    for x_counter, cell in enumerate(row):
+        if cell == 1:
+            background.blit(square, (x_counter * cu, y_counter * cu)) # This draws the map

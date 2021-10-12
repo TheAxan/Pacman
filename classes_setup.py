@@ -3,7 +3,8 @@ import pathing
 import sys
 import copy
 import screen_setup as s
-import map_setup as m
+from maps import default_map as map_grid
+
 
 class Entity:
     entities: list[object] = []  # to loop through routines
@@ -11,19 +12,22 @@ class Entity:
     def __init__(self, x: int, y: int, speed_divider: int, original_direction: str) -> None:
         Entity.entities.append(self)
         
-        self.surface = pygame.Surface((s.u, s.u))
-        self.surface.set_colorkey(s.black)
+        self.rect_surface = pygame.Surface((s.cu, s.cu))
+        self.rect_surface.set_colorkey(s.black)
 
         # self.rect.x is the pixel x
-        self.rect = self.surface.get_rect()
-        self.rect.x = x * s.u
-        self.rect.y = y * s.u
+        self.rect = self.rect_surface.get_rect()
+        self.rect.x = x * s.cu
+        self.rect.y = y * s.cu
+
+        self.surface = pygame.transform.scale(self.rect_surface, (s.gu, s.gu))
+        self.graphic_rect = self.surface.get_rect()
 
         # self.x is the array x
         self.x: int = x
         self.y: int = y
         
-        self.speed: float = s.u / speed_divider
+        self.speed: float = s.cu / speed_divider
         self.movement: tuple[int | float] = {
             'left': (-self.speed, 0),
             'up': (0, -self.speed),
@@ -35,21 +39,22 @@ class Entity:
         self.full_cell_check()
         self.rect.move_ip(self.movement)
         self.update_position()
-        s.screen.blit(self.surface, self.rect)
+        self.graphic_rect.center = self.rect.center
+        s.screen.blit(self.surface, self.graphic_rect)
     
     def update_position(self):
-        self.x = round(self.rect.x / s.u)
-        self.y = round(self.rect.y / s.u)
+        self.x = round(self.rect.x / s.cu)
+        self.y = round(self.rect.y / s.cu)
 
     def tunnel_warp(self):
         if self.y == 14:
             if self.x == -1:
-                self.rect.x = 28 * s.u
+                self.rect.x = 28 * s.cu
             elif self.x == 28:
-                self.rect.x = -1 * s.u
+                self.rect.x = -1 * s.cu
     
     def wall_check(self):
-        if (m.map_grid[self.y + int(self.movement[1] / self.speed)]  # cell ahead is a wall
+        if (map_grid[self.y + int(self.movement[1] / self.speed)]  # cell ahead is a wall
                     [self.x + int(self.movement[0] / self.speed)]) == 1:
             self.wall_reaction()
 
@@ -57,7 +62,7 @@ class Entity:
         pass # defined in subclass
 
     def full_cell_check(self):
-        if self.x == self.rect.x / s.u and self.y == self.rect.y / s.u:  # on a full cell
+        if self.x == self.rect.x / s.cu and self.y == self.rect.y / s.cu:  # on a full cell
             self.full_cell_routine()
 
     def full_cell_routine(self):
@@ -69,11 +74,11 @@ class Player(Entity):
         super().__init__(x, y, speed_divider, original_direction)
         
         self.input: tuple[int | float] | None = None
-        pygame.draw.circle(self.surface, color, (s.u/2, s.u/2), s.u/2)
+        pygame.draw.circle(self.surface, color, (s.gu/2, s.gu/2), s.gu/2)
     
     def update_direction(self):
         if self.input is not None:
-            if not (m.map_grid[self.y + int(self.input[1] / self.speed)]  # cell to turn to isn't a wall
+            if not (map_grid[self.y + int(self.input[1] / self.speed)]  # cell to turn to isn't a wall
                             [self.x + int(self.input[0] / self.speed)]) == 1:
                 if self.x in range(0, 27):
                     self.movement = self.input
@@ -102,11 +107,12 @@ class Player(Entity):
     
 
 class Ennemy(Entity):
-    ghost_template = pygame.Surface((s.u, s.u))
-    pygame.draw.circle(ghost_template, s.white, (s.u/2, s.u/2), s.u/2)
-    pygame.draw.rect(ghost_template, s.black, (0, s.u/2, s.u, s.u/2))
+    ghost_template = pygame.Surface((s.gu, s.gu))
+    pygame.draw.circle(ghost_template, s.white, (s.gu/2, s.gu/2), s.gu/2)
+    pygame.draw.rect(ghost_template, s.black, (0, s.gu/2, s.gu, s.gu/2))
     pygame.draw.polygon(ghost_template, s.white, (
-        (0, s.u/2), (0, s.u), (s.u/4, s.u*3/4), (s.u/2, s.u), (s.u*3/4, s.u*3/4), (s.u, s.u), (s.u, s.u/2)))
+        (0, s.gu/2), (0, s.gu), (s.gu/4, s.gu*3/4), (s.gu/2, s.gu), (s.gu*3/4, s.gu*3/4), (s.gu, s.gu), (s.gu, s.gu/2)))
+    # big_template = pygame.transform.scale(ghost_template, (s.cu*2, s.cu*2))
 
     def __init__(self, x: int, y: int, speed_divider: int, original_direction: str, color: tuple[int], name: str) -> None:
         super().__init__(x, y, speed_divider, original_direction)
@@ -121,19 +127,19 @@ class Ennemy(Entity):
         self.tunnel_warp()
 
     def intersection_check(self):
-        if m.map_grid[self.y][self.x] == 2:
+        if map_grid[self.y][self.x] == 2:
             self.next_move()
         else:
             self.wall_check()
     
     def wall_reaction(self):
         if self.movement[0] == 0:
-            if m.map_grid[self.y][self.x + 1] == 1:
+            if map_grid[self.y][self.x + 1] == 1:
                 self.movement = (-self.speed, 0)
             else:
                 self.movement = (self.speed, 0)
         elif self.movement[1] == 0:
-            if m.map_grid[self.y + 1][self.x] == 1:
+            if map_grid[self.y + 1][self.x] == 1:
                 self.movement = (0, -self.speed)
             else:
                 self.movement = (0, self.speed)
@@ -148,8 +154,8 @@ class Ennemy(Entity):
         temp_array[self.y - int(self.movement[1] / self.speed)][self.x - int(self.movement[0] / self.speed)] = 1
         return temp_array
     
-    def next_move(self):  # TODO A* pathing target parameters
-        path = pathing.A_star((self.x, self.y), (pak.x, pak.y), self.no_backtrack(m.map_grid), (1, 3))
+    def next_move(self):  # TODO A* pathing target parameters, A* tunnel consideration, maybe switch over to heuristic triangulation
+        path = pathing.A_star((self.x, self.y), (pak.x, pak.y), self.no_backtrack(map_grid), (1, 3))
         self.movement = ((path[1][0] - path[0][0]) * self.speed, (path[1][1] - path[0][1]) * self.speed)
 
 

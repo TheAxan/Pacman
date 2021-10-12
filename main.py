@@ -1,7 +1,6 @@
 import pygame
 import sys
 import screen_setup
-import map_setup
 import classes_setup
 
 
@@ -18,7 +17,7 @@ while True:
         elif event.type == pygame.QUIT:
             sys.exit()
 
-    screen_setup.screen.blit(map_setup.background, (0, 0))  # reset background
+    screen_setup.screen.blit(screen_setup.background, (0, 0))  # reset background
     for entity in classes_setup.Entity.entities:
         entity.routine()
     clock.tick(60)
