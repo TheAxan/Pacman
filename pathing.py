@@ -1,12 +1,22 @@
 import queue
 
 
-def neighbors(center_node, array, wall_values):
+def neighbors(center_node: tuple[int], array: list[list[int]], excluded_values: tuple[int]):
+    """Returns the neighbors of a node in a an array.
+
+    Args:
+        center_node (tuple[int]): The node whose neighbors are to be returned.
+        array (list[list[int]]): The array in which the nodes are.
+        excluded_values (tuple): Values which exclude a node from being a neighbor.
+
+    Returns:
+        set: The immediate neighbors of allowed values.
+    """
     x, y = center_node
     neighbors_set = set()
     for i, j in ((x-1, y), (x, y-1), (x+1, y), (x, y+1)):
         try:
-            if array[j][i] not in wall_values:
+            if array[j][i] not in excluded_values:
                 neighbors_set.add((i, j))
         except:
             pass
@@ -18,10 +28,8 @@ def heuristic_cost(a, b):
 
 
 coordinates = tuple[int, int]
-def path_finder(start_node: coordinates, end_node: coordinates, 
-                array: list[list[int]], 
-                wall_values: tuple[int] = 1
-                ) -> list[coordinates]:
+def A_star(start_node: coordinates, end_node: coordinates, 
+           array: list[list[int]], wall_values: tuple[int] = 1) -> list[coordinates]:
     """A* pathfinding from start_node to end_node in an array.
 
     Args:
@@ -58,3 +66,18 @@ def path_finder(start_node: coordinates, end_node: coordinates,
         path.append(active_node)
     path.reverse()
     return path
+
+
+def breadth_first_map(array, start_node):
+    nodes_to_explore = queue.Queue()
+    explored_nodes = set()
+    nodes_to_explore.put(start_node)
+
+    while not nodes_to_explore.empty():
+        current_node = nodes_to_explore.get()
+        for new_node in neighbors(current_node, array, (1, 3)):
+            if new_node not in explored_nodes:
+                nodes_to_explore.put(new_node)
+            explored_nodes.add(current_node)
+    
+    return explored_nodes

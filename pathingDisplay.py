@@ -68,7 +68,7 @@ screen.blit(create_square(green, 120), (origin[0] * u, origin[1] * u))
 screen.blit(create_square(red, 120), (end[0] * u, end[1] * u))
 
 
-for i in pathing.path_finder(origin, end, random_array, (0, 3)):
+for i in pathing.A_star(origin, end, random_array, (0, 3)):
     screen.blit(cyan_square, (i[0]*u, i[1]*u), )
 pygame.display.flip()
 print(input())
