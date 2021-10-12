@@ -6,6 +6,7 @@ import screen_setup as s
 from maps import default_map as map_grid
 
 
+
 class Entity:
     entities: list[object] = []  # to loop through routines
     
