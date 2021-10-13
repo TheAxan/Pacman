@@ -161,12 +161,12 @@ class Ennemy(Entity):
         return temp_array
     
     def next_move_A_star(self):  # maybe TODO A* tunnel consideration
-        path = pathing.A_star((self.x, self.y), self.targeting(), self.no_backtrack(map_grid), (1, 3))
-        self.movement = (path[1][0] - self.x, path[1][1] - self.y)
+        x, y = pathing.A_star((self.x, self.y), self.targeting(), self.no_backtrack(map_grid), (1, 3))[1]
+        self.movement = (x - self.x, y - self.y)
 
     def next_move_triangulation(self):
         x, y = pathing.triangulation((self.x, self.y), self.targeting(), self.no_backtrack(map_grid), (1, 3))
-        self.movement = ((x-self.x), (y-self.y))
+        self.movement = (x-self.x, y-self.y)
 
     def blinky_targeting(self):
         return (pak.x, pak.y)
