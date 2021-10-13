@@ -113,14 +113,18 @@ class Ennemy(Entity):
     pygame.draw.rect(ghost_template, s.black, (0, s.gu/2, s.gu, s.gu/2))
     pygame.draw.polygon(ghost_template, s.white, (
         (0, s.gu/2), (0, s.gu), (s.gu/4, s.gu*3/4), (s.gu/2, s.gu), (s.gu*3/4, s.gu*3/4), (s.gu, s.gu), (s.gu, s.gu/2)))
-    # big_template = pygame.transform.scale(ghost_template, (s.cu*2, s.cu*2))
 
-    def __init__(self, x: int, y: int, speed_divider: int, original_direction: str, color: tuple[int], name: str) -> None:
+
+    def __init__(self, x: int, y: int, speed_divider: int, original_direction: str, 
+                color: tuple[int], name: str, targeting_mode) -> None:
         super().__init__(x, y, speed_divider, original_direction)
         
         self.surface.blit(Ennemy.ghost_template, (0, 0))
         self.surface.fill(color, special_flags=pygame.BLEND_MULT)
         self.name = name
+        self.targeting = {
+            'blinky_targeting': self.blinky_targeting,
+        }[targeting_mode]
 
     def full_cell_routine(self):
         self.player_collision()
@@ -155,14 +159,17 @@ class Ennemy(Entity):
         temp_array[self.y - int(self.movement[1] / self.speed)][self.x - int(self.movement[0] / self.speed)] = 1
         return temp_array
     
-    def next_move(self):  # TODO A* pathing target parameters, A* tunnel consideration, maybe switch over to heuristic triangulation
-        path = pathing.A_star((self.x, self.y), (pak.x, pak.y), self.no_backtrack(map_grid), (1, 3))
+    def next_move_A_star(self):  # TODO A* tunnel consideration, maybe switch over to heuristic triangulation
+        path = pathing.A_star((self.x, self.y), self.targeting(), self.no_backtrack(map_grid), (1, 3))
         self.movement = ((path[1][0] - path[0][0]) * self.speed, (path[1][1] - path[0][1]) * self.speed)
+
+    def blinky_targeting(self):
+        return (pak.x, pak.y)
 
 
 pak = Player(14, 23, 15, 'left', s.yellow)
 
-blinky = Ennemy(17, 23, 18, 'left', s.red, 'Blinky')
+blinky = Ennemy(17, 23, 18, 'left', s.red, 'Blinky', 'blinky_targeting')
 inky = Ennemy(22, 14, 18, 'right', s.cyan, 'Inky')
 pinky = Ennemy(16, 29, 18, 'right', s.pink, 'Pinky')
 clyde = Ennemy(21, 13, 18, 'up', s.orange, 'Clyde')
