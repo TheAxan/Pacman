@@ -133,7 +133,7 @@ class Ennemy(Entity):
 
     def intersection_check(self):
         if map_grid[self.y][self.x] == 2:
-            self.next_move()
+            self.next_move_triangulation()
         else:
             self.wall_check()
     
@@ -159,9 +159,13 @@ class Ennemy(Entity):
         temp_array[self.y - int(self.movement[1] / self.speed)][self.x - int(self.movement[0] / self.speed)] = 1
         return temp_array
     
-    def next_move_A_star(self):  # TODO A* tunnel consideration, maybe switch over to heuristic triangulation
+    def next_move_A_star(self):  # maybe TODO A* tunnel consideration
         path = pathing.A_star((self.x, self.y), self.targeting(), self.no_backtrack(map_grid), (1, 3))
         self.movement = ((path[1][0] - path[0][0]) * self.speed, (path[1][1] - path[0][1]) * self.speed)
+
+    def next_move_triangulation(self):
+        x, y = pathing.triangulation((self.x, self.y), self.targeting(), self.no_backtrack(map_grid), (1, 3))
+        self.movement = ((x-self.x) * self.speed, (y-self.y) * self.speed)
 
     def blinky_targeting(self):
         return (pak.x, pak.y)

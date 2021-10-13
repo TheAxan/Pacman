@@ -1,7 +1,7 @@
 import queue
 
 
-def neighbors(center_node: tuple[int], array: list[list[int]], excluded_values: tuple[int]):
+def neighbors(center_node: tuple[int], array: list[list[int]], excluded_values: tuple[int]) -> set:
     """Returns the neighbors of a node in a an array.
 
     Args:
@@ -81,3 +81,11 @@ def breadth_first_map(array, start_node):
             explored_nodes.add(current_node)
     
     return explored_nodes
+
+
+def triangulation(start_node: coordinates, end_node: coordinates, 
+                  array: list[list[int]], wall_values: tuple[int] = 1):
+    distance_of_node = {}
+    for (x, y) in neighbors(start_node, array, wall_values):
+        distance_of_node[(x - end_node[0]) ** 2 + (y - end_node[1]) ** 2] = (x, y)
+    return distance_of_node[min(distance_of_node)]
