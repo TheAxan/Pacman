@@ -124,6 +124,7 @@ class Ennemy(Entity):
         self.name = name
         self.targeting = {
             'blinky_targeting': self.blinky_targeting,
+            'pinky_targeting': self.pinky_targeting
         }[targeting_mode]
 
     def full_cell_routine(self):
@@ -170,10 +171,12 @@ class Ennemy(Entity):
     def blinky_targeting(self):
         return (pak.x, pak.y)
 
+    def pinky_targeting(self):  # BUG index errer when this returns outside the grid
+        return (pak.x + 4 * int(pak.movement[0] / pak.speed), pak.y + 4 * int(pak.movement[1] / pak.speed))
 
 pak = Player(14, 23, 15, 'left', s.yellow)
 
 blinky = Ennemy(17, 23, 18, 'left', s.red, 'Blinky', 'blinky_targeting')
 inky = Ennemy(22, 14, 18, 'right', s.cyan, 'Inky')
-pinky = Ennemy(16, 29, 18, 'right', s.pink, 'Pinky')
+pinky = Ennemy(16, 29, 18, 'right', s.pink, 'Pinky', 'pinky_targeting')
 clyde = Ennemy(21, 13, 18, 'up', s.orange, 'Clyde')
