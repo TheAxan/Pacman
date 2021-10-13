@@ -2,7 +2,7 @@ import pygame
 import pathing
 import sys
 import copy
-import screen_setup as s
+import screen as s
 from maps import default_map as map_grid
 
 
