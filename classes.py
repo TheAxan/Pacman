@@ -30,15 +30,15 @@ class Entity:
         
         self.speed: float = s.cu / speed_divider
         self.movement: tuple[int | float] = {
-            'left': (-self.speed, 0),
-            'up': (0, -self.speed),
-            'right': (self.speed, 0),
-            'down': (0, self.speed),
+            'up': (0, -1),
+            'left': (-1, 0),
+            'down': (0, 1),
+            'right': (1, 0),
         }[original_direction]
 
     def routine(self):
         self.full_cell_check()
-        self.rect.move_ip(self.movement)
+        self.rect.move_ip(tuple(self.speed * x for x in self.movement))
         self.update_position()
         self.graphic_rect.center = self.rect.center
         s.screen.blit(self.surface, self.graphic_rect)
@@ -55,8 +55,8 @@ class Entity:
                 self.rect.x = -1 * s.cu
     
     def wall_check(self):
-        if (map_grid[self.y + int(self.movement[1] / self.speed)]  # cell ahead is a wall
-                    [self.x + int(self.movement[0] / self.speed)]) == 1:
+        if (map_grid[self.y + self.movement[1]]  # cell ahead is a wall
+                    [self.x + self.movement[0]]) == 1:
             self.wall_reaction()
 
     def wall_reaction():
@@ -79,8 +79,8 @@ class Player(Entity):
     
     def update_direction(self):
         if self.input is not None:
-            if not (map_grid[self.y + int(self.input[1] / self.speed)]  # cell to turn to isn't a wall
-                            [self.x + int(self.input[0] / self.speed)]) == 1:
+            if not (map_grid[self.y + self.input[1]]  # cell to turn to isn't a wall
+                            [self.x + self.input[0]]) == 1:
                 if self.x in range(0, 27):
                     self.movement = self.input
             self.input = None
@@ -100,10 +100,10 @@ class Player(Entity):
     
     def input_handling(self, input):
         self.input = {
-            pygame.K_LEFT: (-self.speed, 0),
-            pygame.K_UP: (0, -self.speed),
-            pygame.K_RIGHT: (self.speed, 0),
-            pygame.K_DOWN: (0, self.speed),
+            pygame.K_UP: (0, -1),
+            pygame.K_LEFT: (-1, 0),
+            pygame.K_DOWN: (0, 1),
+            pygame.K_RIGHT: (1, 0),
         }[input]
     
 
@@ -141,14 +141,14 @@ class Ennemy(Entity):
     def wall_reaction(self):
         if self.movement[0] == 0:
             if map_grid[self.y][self.x + 1] == 1:
-                self.movement = (-self.speed, 0)
+                self.movement = (-1, 0)
             else:
-                self.movement = (self.speed, 0)
+                self.movement = (1, 0)
         elif self.movement[1] == 0:
             if map_grid[self.y + 1][self.x] == 1:
-                self.movement = (0, -self.speed)
+                self.movement = (0, -1)
             else:
-                self.movement = (0, self.speed)
+                self.movement = (0, 1)
         
     def player_collision(self):
         if self.rect.colliderect(pak.rect):
@@ -157,22 +157,22 @@ class Ennemy(Entity):
             
     def no_backtrack(self, array: list[list[int]]):
         temp_array = copy.deepcopy(array)
-        temp_array[self.y - int(self.movement[1] / self.speed)][self.x - int(self.movement[0] / self.speed)] = 1
+        temp_array[self.y - self.movement[1]][self.x - self.movement[0]] = 1
         return temp_array
     
     def next_move_A_star(self):  # maybe TODO A* tunnel consideration
         path = pathing.A_star((self.x, self.y), self.targeting(), self.no_backtrack(map_grid), (1, 3))
-        self.movement = ((path[1][0] - path[0][0]) * self.speed, (path[1][1] - path[0][1]) * self.speed)
+        self.movement = (path[1][0] - self.x, path[1][1] - self.y)
 
     def next_move_triangulation(self):
         x, y = pathing.triangulation((self.x, self.y), self.targeting(), self.no_backtrack(map_grid), (1, 3))
-        self.movement = ((x-self.x) * self.speed, (y-self.y) * self.speed)
+        self.movement = ((x-self.x), (y-self.y))
 
     def blinky_targeting(self):
         return (pak.x, pak.y)
 
     def pinky_targeting(self):  # BUG index errer when this returns outside the grid
-        return (pak.x + 4 * int(pak.movement[0] / pak.speed), pak.y + 4 * int(pak.movement[1] / pak.speed))
+        return (pak.x + 4 * pak.movement[0], pak.y + 4 * pak.movement[1])
 
 pak = Player(14, 23, 15, 'left', s.yellow)
 
