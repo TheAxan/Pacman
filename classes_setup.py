@@ -116,7 +116,7 @@ class Ennemy(Entity):
 
 
     def __init__(self, x: int, y: int, speed_divider: int, original_direction: str, 
-                color: tuple[int], name: str, targeting_mode) -> None:
+                color: tuple[int], name: str, targeting_mode='blinky_targeting') -> None:
         super().__init__(x, y, speed_divider, original_direction)
         
         self.surface.blit(Ennemy.ghost_template, (0, 0))
