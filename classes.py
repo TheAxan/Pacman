@@ -171,7 +171,7 @@ class Ennemy(Entity):
     def blinky_targeting(self):
         return (pak.x, pak.y)
 
-    def pinky_targeting(self):  # BUG index errer when this returns outside the grid
+    def pinky_targeting(self):
         return (pak.x + 4 * pak.movement[0], pak.y + 4 * pak.movement[1])
 
 pak = Player(14, 23, 15, 'left', s.yellow)

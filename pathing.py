@@ -68,14 +68,24 @@ def A_star(start_node: coordinates, end_node: coordinates,
     return path
 
 
-def breadth_first_map(array, start_node):
+def breadth_first_map(array, start_node, wall_values: tuple[int] = 1):
+    """Explores an array
+
+    Args:
+        array (list[list[int]]): Array to explore.
+        start_node ([type]): A reachable node.
+        wall_values (tuple[int], optional): Values which exclude a node from being a neighbor. Defaults to 1.
+
+    Returns:
+        set: Reachable nodes.
+    """
     nodes_to_explore = queue.Queue()
     explored_nodes = set()
     nodes_to_explore.put(start_node)
 
     while not nodes_to_explore.empty():
         current_node = nodes_to_explore.get()
-        for new_node in neighbors(current_node, array, (1, 3)):
+        for new_node in neighbors(current_node, array, wall_values):
             if new_node not in explored_nodes:
                 nodes_to_explore.put(new_node)
             explored_nodes.add(current_node)
@@ -85,6 +95,17 @@ def breadth_first_map(array, start_node):
 
 def triangulation(start_node: coordinates, end_node: coordinates, 
                   array: list[list[int]], wall_values: tuple[int] = 1):
+    """Find the next best move by triangulation
+
+    Args:
+        start_node (coordinates)
+        end_node (coordinates): The target.
+        array (list[list[int]]): Array in which the nodes are located.
+        wall_values (tuple[int], optional): Values which exclude a node from being a neighbor. Defaults to 1.
+
+    Returns:
+        coordinates: The coordinates of the start_node neighbor closest to the end_node.
+    """
     distance_of_node = {}
     for (x, y) in neighbors(start_node, array, wall_values):
         distance_of_node[(x - end_node[0]) ** 2 + (y - end_node[1]) ** 2] = (x, y)
