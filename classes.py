@@ -13,17 +13,6 @@ class Entity:
     def __init__(self, x: int, y: int, speed_divider: int, original_direction: str) -> None:
         Entity.entities.append(self)
         
-        self.rect_surface = pygame.Surface((s.cu, s.cu))
-        self.rect_surface.set_colorkey(s.black)
-
-        # self.rect.x is the pixel x
-        self.rect = self.rect_surface.get_rect()
-        self.rect.x = x * s.cu
-        self.rect.y = y * s.cu
-
-        self.surface = pygame.transform.scale(self.rect_surface, (s.gu, s.gu))
-        self.graphic_rect = self.surface.get_rect()
-
         # self.x is the array x
         self.x: int = x
         self.y: int = y
@@ -36,6 +25,17 @@ class Entity:
             'right': (1, 0),
         }[original_direction]
 
+        self.rect_surface = pygame.Surface((s.cu, s.cu))
+        self.rect_surface.set_colorkey(s.black)
+
+        # self.rect.x is the pixel x
+        self.rect = self.rect_surface.get_rect()
+        self.rect.x = x * s.cu
+        self.rect.y = y * s.cu
+
+        self.surface = pygame.transform.scale(self.rect_surface, (s.gu, s.gu))
+        self.graphic_rect = self.surface.get_rect()
+
     def routine(self):
         self.full_cell_check()
         self.rect.move_ip(tuple(self.speed * x for x in self.movement))
@@ -43,9 +43,12 @@ class Entity:
         self.graphic_rect.center = self.rect.center
         s.screen.blit(self.surface, self.graphic_rect)
     
-    def update_position(self):
-        self.x = round(self.rect.x / s.cu)
-        self.y = round(self.rect.y / s.cu)
+    def full_cell_check(self):
+        if self.x == self.rect.x / s.cu and self.y == self.rect.y / s.cu:  # on a full cell
+            self.full_cell_routine()
+    
+    def full_cell_routine(self):
+        pass  # defined in subclass
 
     def tunnel_warp(self):
         if self.y == 14:
@@ -62,20 +65,30 @@ class Entity:
     def wall_reaction():
         pass # defined in subclass
 
-    def full_cell_check(self):
-        if self.x == self.rect.x / s.cu and self.y == self.rect.y / s.cu:  # on a full cell
-            self.full_cell_routine()
-
-    def full_cell_routine(self):
-        pass  # defined in subclass
+    def update_position(self):
+        self.x = round(self.rect.x / s.cu)
+        self.y = round(self.rect.y / s.cu)
 
 
 class Player(Entity):
     def __init__(self, x: int, y: int, speed_divider: int, original_direction: str, color: tuple[int]) -> None:
         super().__init__(x, y, speed_divider, original_direction)
-        
         self.input: tuple[int | float] | None = None
         pygame.draw.circle(self.surface, color, (s.gu/2, s.gu/2), s.gu/2)
+    
+    def input_handling(self, input):
+        self.input = {
+            pygame.K_UP: (0, -1),
+            pygame.K_LEFT: (-1, 0),
+            pygame.K_DOWN: (0, 1),
+            pygame.K_RIGHT: (1, 0),
+        }[input]
+    
+    def full_cell_routine(self):
+        self.update_direction()
+        self.tunnel_warp()
+        self.wall_check()
+        self.ghost_collision()
     
     def update_direction(self):
         if self.input is not None:
@@ -91,20 +104,6 @@ class Player(Entity):
     def ghost_collision(self):
         for entity in Entity.entities[1:]:
             entity.player_collision()
-
-    def full_cell_routine(self):
-        self.update_direction()
-        self.tunnel_warp()
-        self.wall_check()
-        self.ghost_collision()
-    
-    def input_handling(self, input):
-        self.input = {
-            pygame.K_UP: (0, -1),
-            pygame.K_LEFT: (-1, 0),
-            pygame.K_DOWN: (0, 1),
-            pygame.K_RIGHT: (1, 0),
-        }[input]
     
 
 class Ennemy(Entity):
@@ -132,33 +131,16 @@ class Ennemy(Entity):
         self.intersection_check()
         self.tunnel_warp()
 
+    def player_collision(self):
+        if self.rect.colliderect(pak.rect):
+            print(f'Game over, {self.name} got you')  # maybe TODO game over screen
+            sys.exit()
+    
     def intersection_check(self):
         if map_grid[self.y][self.x] == 2:
             self.next_move_triangulation()
         else:
             self.wall_check()
-    
-    def wall_reaction(self):
-        if self.movement[0] == 0:
-            if map_grid[self.y][self.x + 1] == 1:
-                self.movement = (-1, 0)
-            else:
-                self.movement = (1, 0)
-        elif self.movement[1] == 0:
-            if map_grid[self.y + 1][self.x] == 1:
-                self.movement = (0, -1)
-            else:
-                self.movement = (0, 1)
-        
-    def player_collision(self):
-        if self.rect.colliderect(pak.rect):
-            print(f'Game over, {self.name} got you')  # maybe TODO game over screen
-            sys.exit()
-            
-    def no_backtrack(self, array: list[list[int]]):
-        temp_array = copy.deepcopy(array)
-        temp_array[self.y - self.movement[1]][self.x - self.movement[0]] = 1
-        return temp_array
     
     def next_move_A_star(self):  # maybe TODO A* tunnel consideration
         x, y = pathing.A_star((self.x, self.y), self.targeting(), self.no_backtrack(map_grid), (1, 3))[1]
@@ -173,6 +155,24 @@ class Ennemy(Entity):
 
     def pinky_targeting(self):
         return (pak.x + 4 * pak.movement[0], pak.y + 4 * pak.movement[1])
+
+    def no_backtrack(self, array: list[list[int]]):
+        temp_array = copy.deepcopy(array)
+        temp_array[self.y - self.movement[1]][self.x - self.movement[0]] = 1
+        return temp_array
+        
+    def wall_reaction(self):
+        if self.movement[0] == 0:
+            if map_grid[self.y][self.x + 1] == 1:
+                self.movement = (-1, 0)
+            else:
+                self.movement = (1, 0)
+        elif self.movement[1] == 0:
+            if map_grid[self.y + 1][self.x] == 1:
+                self.movement = (0, -1)
+            else:
+                self.movement = (0, 1)
+            
 
 pak = Player(14, 23, 15, 'left', s.yellow)
 
