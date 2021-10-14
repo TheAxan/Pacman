@@ -10,20 +10,21 @@ from maps import default_map as map_grid
 class Entity:
     entities: list[object] = []  # to loop through routines
     
-    def __init__(self, x: int, y: int, speed_divider: int, original_direction: str) -> None:
+    def __init__(self, x: int, y: int, speed_divider: int, original_orientation: str) -> None:
         Entity.entities.append(self)
         
         # self.x is the array x
         self.x: int = x
         self.y: int = y
         
-        self.speed: float = s.cu / speed_divider
-        self.movement: tuple[int | float] = {
+        self.scalar_speed: float = s.cu / speed_divider
+        self.orientation: tuple[int | float] = {
             'up': (0, -1),
             'left': (-1, 0),
             'down': (0, 1),
             'right': (1, 0),
-        }[original_direction]
+        }[original_orientation]
+        self.vector_speed = tuple(self.scalar_speed * x for x in self.orientation)
 
         self.rect_surface = pygame.Surface((s.cu, s.cu))
         self.rect_surface.set_colorkey(s.black)
@@ -38,7 +39,7 @@ class Entity:
 
     def routine(self):
         self.full_cell_check()
-        self.rect.move_ip(tuple(self.speed * x for x in self.movement))
+        self.rect.move_ip(self.vector_speed)
         self.update_position()
         self.graphic_rect.center = self.rect.center
         s.screen.blit(self.surface, self.graphic_rect)
@@ -58,8 +59,8 @@ class Entity:
                 self.rect.x = -1 * s.cu
     
     def wall_check(self):
-        if (map_grid[self.y + self.movement[1]]  # cell ahead is a wall
-                    [self.x + self.movement[0]]) == 1:
+        if (map_grid[self.y + self.orientation[1]]  # cell ahead is a wall
+                    [self.x + self.orientation[0]]) == 1:
             self.wall_reaction()
 
     def wall_reaction():
@@ -71,8 +72,8 @@ class Entity:
 
 
 class Player(Entity):
-    def __init__(self, x: int, y: int, speed_divider: int, original_direction: str, color: tuple[int]) -> None:
-        super().__init__(x, y, speed_divider, original_direction)
+    def __init__(self, x: int, y: int, speed_divider: int, original_orientation: str, color: tuple[int]) -> None:
+        super().__init__(x, y, speed_divider, original_orientation)
         self.input: tuple[int | float] | None = None
         pygame.draw.circle(self.surface, color, (s.gu/2, s.gu/2), s.gu/2)
     
@@ -85,21 +86,22 @@ class Player(Entity):
         }[input]
     
     def full_cell_routine(self):
-        self.update_direction()
+        self.update_orientation()
         self.tunnel_warp()
         self.wall_check()
         self.ghost_collision()
     
-    def update_direction(self):
+    def update_orientation(self):
         if self.input is not None:
             if not (map_grid[self.y + self.input[1]]  # cell to turn to isn't a wall
                             [self.x + self.input[0]]) == 1:
                 if self.x in range(0, 27):
-                    self.movement = self.input
+                    self.orientation = self.input
+                    self.vector_speed = tuple(self.scalar_speed * x for x in self.orientation)
             self.input = None
     
     def wall_reaction(self):
-        self.movement = (0, 0)
+        self.vector_speed = (0, 0)
     
     def ghost_collision(self):
         for entity in Entity.entities[1:]:
@@ -114,9 +116,9 @@ class Ennemy(Entity):
         (0, s.gu/2), (0, s.gu), (s.gu/4, s.gu*3/4), (s.gu/2, s.gu), (s.gu*3/4, s.gu*3/4), (s.gu, s.gu), (s.gu, s.gu/2)))
 
 
-    def __init__(self, x: int, y: int, speed_divider: int, original_direction: str, 
+    def __init__(self, x: int, y: int, speed_divider: int, original_orientation: str, 
                 color: tuple[int], name: str, targeting_mode='blinky_targeting') -> None:
-        super().__init__(x, y, speed_divider, original_direction)
+        super().__init__(x, y, speed_divider, original_orientation)
         
         self.surface.blit(Ennemy.ghost_template, (0, 0))
         self.surface.fill(color, special_flags=pygame.BLEND_MULT)
@@ -144,34 +146,40 @@ class Ennemy(Entity):
     
     def next_move_A_star(self):  # maybe TODO A* tunnel consideration
         x, y = pathing.A_star((self.x, self.y), self.targeting(), self.no_backtrack(map_grid), (1, 3))[1]
-        self.movement = (x - self.x, y - self.y)
+        self.orientation = (x - self.x, y - self.y)
+        self.vector_speed = tuple(self.scalar_speed * x for x in self.orientation)
 
     def next_move_triangulation(self):
         x, y = pathing.triangulation((self.x, self.y), self.targeting(), self.no_backtrack(map_grid), (1, 3))
-        self.movement = (x-self.x, y-self.y)
+        self.orientation = (x-self.x, y-self.y)
+        self.vector_speed = tuple(self.scalar_speed * x for x in self.orientation)
 
     def blinky_targeting(self):
         return (pak.x, pak.y)
 
     def pinky_targeting(self):
-        return (pak.x + 4 * pak.movement[0], pak.y + 4 * pak.movement[1])
+        return (pak.x + 4 * pak.orientation[0], pak.y + 4 * pak.orientation[1])
 
     def no_backtrack(self, array: list[list[int]]):
         temp_array = copy.deepcopy(array)
-        temp_array[self.y - self.movement[1]][self.x - self.movement[0]] = 1
+        temp_array[self.y - self.orientation[1]][self.x - self.orientation[0]] = 1
         return temp_array
         
     def wall_reaction(self):
-        if self.movement[0] == 0:
+        if self.orientation[0] == 0:
             if map_grid[self.y][self.x + 1] == 1:
-                self.movement = (-1, 0)
+                self.orientation = (-1, 0)
+                self.vector_speed = (-self.scalar_speed, 0)
             else:
-                self.movement = (1, 0)
-        elif self.movement[1] == 0:
+                self.orientation = (1, 0)
+                self.vector_speed = (self.scalar_speed, 0)
+        elif self.orientation[1] == 0:
             if map_grid[self.y + 1][self.x] == 1:
-                self.movement = (0, -1)
+                self.orientation = (0, -1)
+                self.vector_speed = (0, -self.scalar_speed)
             else:
-                self.movement = (0, 1)
+                self.orientation = (0, 1)
+                self.vector_speed = (0, self.scalar_speed)
             
 
 pak = Player(14, 23, 15, 'left', s.yellow)
