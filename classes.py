@@ -128,7 +128,8 @@ class Ennemy(Entity):
         self.targeting = {
             'blinky_targeting': self.blinky_targeting,
             'pinky_targeting': self.pinky_targeting,
-            'inky_targeting': self.inky_targeting
+            'inky_targeting': self.inky_targeting,
+            'clyde_targeting': self.clyde_targeting,
         }[targeting_mode]
 
     def full_cell_routine(self):
@@ -186,6 +187,12 @@ class Ennemy(Entity):
             ((pak.x + 2 * pak.orientation[0] - blinky.x) * 2 + blinky.x) * s.cu, 
             ((pak.y + 2 * pak.orientation[1] - blinky.y) * 2 + blinky.y) * s.cu))
 
+    def clyde_targeting(self):
+        if ((pak.x - self.x) ** 2 + (pak.y - self.y) ** 2) ** 0.5 <= 8:
+            return (0, len(map_grid) - 1)
+        else:
+            return self.blinky_targeting()
+    
     def no_backtrack(self, array: list[list[int]]):
         temp_array = copy.deepcopy(array)
         temp_array[self.y - self.orientation[1]][self.x - self.orientation[0]] = 1
@@ -209,4 +216,4 @@ pak = Player(14, 23, 15, 'left', s.yellow)
 blinky = Ennemy(17, 23, 18, 'left', s.red, 'Blinky', 'blinky_targeting')
 inky = Ennemy(22, 14, 18, 'right', s.cyan, 'Inky', 'inky_targeting')
 pinky = Ennemy(16, 29, 18, 'right', s.pink, 'Pinky', 'pinky_targeting')
-clyde = Ennemy(21, 13, 18, 'up', s.orange, 'Clyde')
+clyde = Ennemy(21, 13, 18, 'up', s.orange, 'Clyde', 'clyde_targeting')
