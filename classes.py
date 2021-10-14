@@ -164,35 +164,27 @@ class Ennemy(Entity):
     def pinky_targeting(self):
         return (pak.x + 4 * pak.orientation[0], pak.y + 4 * pak.orientation[1])
 
-    def pinky_targeting_display():
-        circle = pygame.Surface((s.cu, s.cu))
-        circle.set_colorkey(s.black)
-        pygame.draw.circle(circle, s.pink, (s.cu/2, s.cu/2), s.cu/3)
-        s.screen.blit(circle, ((pak.x + 4 * pak.orientation[0]) * s.cu, (pak.y + 4 * pak.orientation[1]) * s.cu))
-    
     def inky_targeting(self):  # a blinky ennemy is required
         return (
             (pak.x + 2 * pak.orientation[0] - blinky.x) * 2 + blinky.x, 
             (pak.y + 2 * pak.orientation[1] - blinky.y) * 2 + blinky.y
         )
     
-    def inky_targeting_display():
-        circle = pygame.Surface((s.cu, s.cu))
-        circle.set_colorkey(s.black)
-        pygame.draw.circle(circle, s.cyan, (s.cu/2, s.cu/2), s.cu/3)
-        s.screen.blit(circle, ((
-            (pak.x + 2 * pak.orientation[0]) * s.cu,
-            (pak.y + 2 * pak.orientation[1]) * s.cu)))
-        s.screen.blit(circle, (
-            ((pak.x + 2 * pak.orientation[0] - blinky.x) * 2 + blinky.x) * s.cu, 
-            ((pak.y + 2 * pak.orientation[1] - blinky.y) * 2 + blinky.y) * s.cu))
-
     def clyde_targeting(self):
         if ((pak.x - self.x) ** 2 + (pak.y - self.y) ** 2) ** 0.5 <= 8:
             return (0, len(map_grid) - 1)
         else:
             return self.blinky_targeting()
     
+    def targeting_display(self, color, targeting):
+        circle = pygame.Surface((s.cu, s.cu))
+        circle.set_colorkey(s.black)
+        pygame.draw.circle(circle, color, (s.cu/2, s.cu/2), s.cu/3)
+        if targeting == inky.inky_targeting:
+            s.screen.blit(circle, tuple(i * s.cu for i in (pak.x + 2 * pak.orientation[0], 
+                                                           pak.y + 2 * pak.orientation[1])))
+        s.screen.blit(circle, tuple(i * s.cu for i in targeting()))
+
     def no_backtrack(self, array: list[list[int]]):
         temp_array = copy.deepcopy(array)
         temp_array[self.y - self.orientation[1]][self.x - self.orientation[0]] = 1
