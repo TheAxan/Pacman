@@ -18,13 +18,12 @@ class Entity:
         self.y: int = y
         
         self.scalar_speed: float = s.cu / speed_divider
-        self.orientation: tuple[int | float] = {
+        self.orientation_update({
             'up': (0, -1),
             'left': (-1, 0),
             'down': (0, 1),
             'right': (1, 0),
-        }[original_orientation]
-        self.vector_speed = tuple(self.scalar_speed * x for x in self.orientation)
+        }[original_orientation])
 
         self.rect_surface = pygame.Surface((s.cu, s.cu))
         self.rect_surface.set_colorkey(s.black)
@@ -70,6 +69,10 @@ class Entity:
         self.x = round(self.rect.x / s.cu)
         self.y = round(self.rect.y / s.cu)
 
+    def orientation_update(self, new_orientation):
+        self.orientation = new_orientation
+        self.vector_speed = tuple(self.scalar_speed * x for x in self.orientation)
+
 
 class Player(Entity):
     def __init__(self, x: int, y: int, speed_divider: int, original_orientation: str, color: tuple[int]) -> None:
@@ -77,7 +80,7 @@ class Player(Entity):
         self.input: tuple[int | float] | None = None
         pygame.draw.circle(self.surface, color, (s.gu/2, s.gu/2), s.gu/2)
     
-    def input_handling(self, input):
+    def input_assignement(self, input):
         self.input = {
             pygame.K_UP: (0, -1),
             pygame.K_LEFT: (-1, 0),
@@ -86,18 +89,17 @@ class Player(Entity):
         }[input]
     
     def full_cell_routine(self):
-        self.update_orientation()
+        self.input_handling()
         self.tunnel_warp()
         self.wall_check()
         self.ghost_collision()
     
-    def update_orientation(self):
+    def input_handling(self):
         if self.input is not None:
             if not (map_grid[self.y + self.input[1]]  # cell to turn to isn't a wall
                             [self.x + self.input[0]]) == 1:
                 if self.x in range(0, 27):
-                    self.orientation = self.input
-                    self.vector_speed = tuple(self.scalar_speed * x for x in self.orientation)
+                    self.orientation_update(self.input)
             self.input = None
     
     def wall_reaction(self):
@@ -168,18 +170,14 @@ class Ennemy(Entity):
     def wall_reaction(self):
         if self.orientation[0] == 0:
             if map_grid[self.y][self.x + 1] == 1:
-                self.orientation = (-1, 0)
-                self.vector_speed = (-self.scalar_speed, 0)
+                self.orientation_update((-1, 0))
             else:
-                self.orientation = (1, 0)
-                self.vector_speed = (self.scalar_speed, 0)
+                self.orientation_update((1, 0))
         elif self.orientation[1] == 0:
             if map_grid[self.y + 1][self.x] == 1:
-                self.orientation = (0, -1)
-                self.vector_speed = (0, -self.scalar_speed)
+                self.orientation_update((0, -1))
             else:
-                self.orientation = (0, 1)
-                self.vector_speed = (0, self.scalar_speed)
+                self.orientation_update((0, 1))
             
 
 pak = Player(14, 23, 15, 'left', s.yellow)
