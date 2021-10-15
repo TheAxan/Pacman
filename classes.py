@@ -171,14 +171,15 @@ class Ennemy(Entity):
         else:
             return self.blinky_targeting()
     
-    def targeting_display(self, color, targeting):
-        circle = pygame.Surface((s.cu, s.cu))
-        circle.set_colorkey(s.black)
-        pygame.draw.circle(circle, color, (s.cu/2, s.cu/2), s.cu/3)
-        if targeting == inky.inky_targeting:
-            s.screen.blit(circle, tuple(i * s.cu for i in (pak.x + 2 * pak.orientation[0], 
-                                                           pak.y + 2 * pak.orientation[1])))
-        s.screen.blit(circle, tuple(i * s.cu for i in targeting()))
+    def targeting_display(self):
+        circle_surface = pygame.Surface((s.cu, s.cu))
+        circle_surface.set_colorkey(s.black)
+        pygame.draw.circle(circle_surface, self.surface.get_at(self.surface.get_rect().center), 
+                           (s.cu/2, s.cu/2), s.cu/3)
+        if self.targeting == inky.inky_targeting:
+            s.screen.blit(circle_surface, tuple(i * s.cu for i in (pak.x + 2 * pak.orientation[0], 
+                                                                   pak.y + 2 * pak.orientation[1])))
+        s.screen.blit(circle_surface, tuple(i * s.cu for i in self.targeting()))
 
     def no_backtrack(self, array: list[list[int]]):
         temp_array = copy.deepcopy(array)

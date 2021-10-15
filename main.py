@@ -6,6 +6,7 @@ import classes
 
 pygame.init()
 clock = pygame.time.Clock()
+display_targets: bool = False
 
 while True:
     for event in pygame.event.get():
@@ -20,5 +21,8 @@ while True:
     screen.screen.blit(screen.background, (0, 0))  # reset background
     for entity in classes.Entity.entities:
         entity.routine()
+    if display_targets:
+        for entity in filter(lambda e: type(e) == classes.Ennemy, classes.Entity.entities):
+            entity.targeting_display()
     clock.tick(60)
     pygame.display.flip()
