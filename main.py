@@ -7,6 +7,10 @@ import classes
 pygame.init()
 clock = pygame.time.Clock()
 display_targets: bool = False
+timer: int = 0
+chase_mode: bool = False
+chase_duration: int = 20000
+scatter_duration: int = 7000
 
 while True:
     for event in pygame.event.get():
@@ -25,4 +29,12 @@ while True:
         for entity in filter(lambda e: type(e) == classes.Ennemy, classes.Entity.entities):
             entity.targeting_display()
     clock.tick(60)
+    timer += clock.get_time()
+    if chase_mode:
+        if timer > chase_duration:
+            timer = 0
+            chase_mode = False
+    elif timer > scatter_duration:
+        timer = 0
+        chase_mode = True
     pygame.display.flip()
