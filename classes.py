@@ -125,12 +125,7 @@ class Ennemy(Entity):
         self.surface.blit(Ennemy.ghost_template, (0, 0))
         self.surface.fill(color, special_flags=pygame.BLEND_MULT)
         self.name = name
-        self.targeting = {
-            'blinky': self.blinky_targeting,
-            'pinky': self.pinky_targeting,
-            'inky': self.inky_targeting,
-            'clyde': self.clyde_targeting,
-        }[targeting_mode]
+        self.targeting = getattr(self, targeting_mode)
 
     def full_cell_routine(self):
         self.player_collision()
@@ -205,7 +200,7 @@ class Ennemy(Entity):
 
 pak = Player(14, 23, 15, 'left', s.yellow)
 
-blinky = Ennemy(17, 23, 18, 'left', s.red, 'Blinky', 'blinky')
-inky = Ennemy(22, 14, 18, 'right', s.cyan, 'Inky', 'inky')
-pinky = Ennemy(16, 29, 18, 'right', s.pink, 'Pinky', 'pinky')
-clyde = Ennemy(21, 13, 18, 'up', s.orange, 'Clyde', 'clyde')
+blinky = Ennemy(17, 23, 18, 'left', s.red, 'Blinky', 'blinky_targeting')
+inky = Ennemy(22, 14, 18, 'right', s.cyan, 'Inky', 'inky_targeting')
+pinky = Ennemy(16, 29, 18, 'right', s.pink, 'Pinky', 'pinky_targeting')
+clyde = Ennemy(21, 13, 18, 'up', s.orange, 'Clyde', 'clyde_targeting')
