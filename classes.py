@@ -117,7 +117,7 @@ class Ennemy(Entity):
     pygame.draw.polygon(ghost_template, s.white, (
         (0, s.gu/2), (0, s.gu), (s.gu/4, s.gu*3/4), (s.gu/2, s.gu), (s.gu*3/4, s.gu*3/4), (s.gu, s.gu), (s.gu, s.gu/2)))
 
-
+    chase_mode: bool = False
     def __init__(self, x: int, y: int, speed_divider: int, original_orientation: str, 
                 color: tuple[int], name: str, targeting_mode='blinky_targeting') -> None:
         super().__init__(x, y, speed_divider, original_orientation)
