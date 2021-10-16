@@ -8,10 +8,10 @@ from maps import default_map as map_grid
 
 
 class Entity:
-    entities: list[object] = []  # to loop through routines
+    entities: set[object] =  set()  # to loop through routines
     
     def __init__(self, x: int, y: int, speed_divider: int, original_orientation: str) -> None:
-        Entity.entities.append(self)
+        Entity.entities.add(self)
         
         # self.x is the array x
         self.x: int = x
@@ -118,7 +118,7 @@ class Ennemy(Entity):
         (0, s.gu/2), (0, s.gu), (s.gu/4, s.gu*3/4), (s.gu/2, s.gu), (s.gu*3/4, s.gu*3/4), (s.gu, s.gu), (s.gu, s.gu/2)))
 
     chase_mode: bool = False
-    ennemies: list[object] = []
+    ennemies: set[object] = set()
     
     def __init__(self, x: int, y: int, speed_divider: int, original_orientation: str, 
                  color: tuple[int], name: str, scatter_target, chase_target) -> None:
@@ -141,7 +141,7 @@ class Ennemy(Entity):
         }.get(chase_target, 'blinky_targe')
 
 
-        Ennemy.ennemies.append(self)
+        Ennemy.ennemies.add(self)
 
     def full_cell_routine(self):
         self.player_collision()
