@@ -36,7 +36,7 @@ while True:
         entity.routine()
     if display_targets:
         for entity in classes.Ennemy.ennemies:
-            entity.targeting_display()
+            entity.target_display()
     clock.tick(60)
     timer += clock.get_time()
     if classes.Ennemy.chase_mode:
