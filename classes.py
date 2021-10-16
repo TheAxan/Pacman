@@ -129,7 +129,7 @@ class Ennemy(Entity):
         self.name = name
         self.targeting = getattr(self, targeting_mode)
 
-        Ennemy.entities.append(self)
+        Ennemy.ennemies.append(self)
 
     def full_cell_routine(self):
         self.player_collision()
