@@ -11,6 +11,16 @@ timer: int = 0
 chase_duration: int = 20000
 scatter_duration: int = 7000
 
+def chase_switch(duration):
+    global timer
+    
+    if timer > duration:
+        classes.Ennemy.chase_mode = not classes.Ennemy.chase_mode
+        for ennemy in classes.Ennemy.ennemies:
+            ennemy.turn_around()
+        timer = 0
+
+
 while True:
     for event in pygame.event.get():
         if event.type == pygame.KEYDOWN:
@@ -30,10 +40,7 @@ while True:
     clock.tick(60)
     timer += clock.get_time()
     if classes.Ennemy.chase_mode:
-        if timer > chase_duration:
-            timer = 0
-            classes.Ennemy.chase_mode = False
-    elif timer > scatter_duration:
-        timer = 0
-        classes.Ennemy.chase_mode = True
+        chase_switch(chase_duration)
+    else:
+        chase_switch(scatter_duration)
     pygame.display.flip()

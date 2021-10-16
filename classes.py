@@ -106,7 +106,7 @@ class Player(Entity):
         self.vector_speed = (0, 0)
     
     def ghost_collision(self):
-        for entity in Entity.entities[1:]:
+        for entity in Ennemy.ennemies:
             entity.player_collision()
     
 
