@@ -127,7 +127,13 @@ class Ennemy(Entity):
         self.surface.blit(Ennemy.ghost_template, (0, 0))
         self.surface.fill(color, special_flags=pygame.BLEND_MULT)
         self.name = name
-        self.chase_target = getattr(self, chase_target)
+        self.chase_target = {
+            'blinky_target': self.blinky_target,
+            'pinky_target': self.pinky_target,
+            'inky_target': self.inky_target,
+            'clyde_target': self.clyde_target,
+        }[chase_target]
+
 
         Ennemy.ennemies.append(self)
 
