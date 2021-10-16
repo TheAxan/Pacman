@@ -121,19 +121,25 @@ class Ennemy(Entity):
     ennemies: list[object] = []
     
     def __init__(self, x: int, y: int, speed_divider: int, original_orientation: str, 
-                color: tuple[int], name: str, scatter_target, chase_target='blinky_target') -> None:
+                 color: tuple[int], name: str, scatter_target, chase_target) -> None:
         super().__init__(x, y, speed_divider, original_orientation)
         
         self.surface.blit(Ennemy.ghost_template, (0, 0))
         self.surface.fill(color, special_flags=pygame.BLEND_MULT)
         self.name = name
-        self.chase_target = getattr(self, chase_target)
         self.scatter_target = {
             'up-left': (0, 0),
             'up-right': (len(map_grid[0]) - 1, 0),
-            'down-left': (0, len(map_grid)),
-            'down-right': (len(map_grid[0]), len(map_grid)),
+            'down-left': (0, len(map_grid) -1 ),
+            'down-right': (len(map_grid[0]) -1, len(map_grid) -1),
         }.get(scatter_target, 'up-left')
+        self.chase_target = {
+            'blinky_target': self.blinky_target,
+            'pinky_target': self.pinky_target,
+            'inky_target': self.inky_target,
+            'clyde_target': self.clyde_target,
+        }.get(chase_target, 'blinky_targe')
+
 
         Ennemy.ennemies.append(self)
 
@@ -196,7 +202,7 @@ class Ennemy(Entity):
             s.screen.blit(circle_surface,
                           tuple(i * s.cu for i in (pak.x + 2 * pak.orientation[0], 
                                                    pak.y + 2 * pak.orientation[1])))
-        s.screen.blit(circle_surface, tuple(i * s.cu for i in self.chase_target()))
+        s.screen.blit(circle_surface, tuple(i * s.cu for i in self.target_selection()))
 
     def no_backtrack(self, array: list[list[int]]):
         temp_array = copy.deepcopy(array)
