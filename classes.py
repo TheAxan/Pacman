@@ -106,7 +106,7 @@ class Player(Entity):
         self.vector_speed = (0, 0)
     
     def ghost_collision(self):
-        for entity in Entity.entities[1:]:
+        for entity in Ennemy.ennemies:
             entity.player_collision()
     
 
@@ -117,15 +117,25 @@ class Ennemy(Entity):
     pygame.draw.polygon(ghost_template, s.white, (
         (0, s.gu/2), (0, s.gu), (s.gu/4, s.gu*3/4), (s.gu/2, s.gu), (s.gu*3/4, s.gu*3/4), (s.gu, s.gu), (s.gu, s.gu/2)))
 
-
+    chase_mode: bool = False
+    ennemies: list[object] = []
+    
     def __init__(self, x: int, y: int, speed_divider: int, original_orientation: str, 
-                color: tuple[int], name: str, targeting_mode='blinky_targeting') -> None:
+                color: tuple[int], name: str, chase_target='blinky_target') -> None:
         super().__init__(x, y, speed_divider, original_orientation)
         
         self.surface.blit(Ennemy.ghost_template, (0, 0))
         self.surface.fill(color, special_flags=pygame.BLEND_MULT)
         self.name = name
-        self.targeting = getattr(self, targeting_mode)
+        self.chase_target = {
+            'blinky_target': self.blinky_target,
+            'pinky_target': self.pinky_target,
+            'inky_target': self.inky_target,
+            'clyde_target': self.clyde_target,
+        }[chase_target]
+
+
+        Ennemy.ennemies.append(self)
 
     def full_cell_routine(self):
         self.player_collision()
@@ -144,41 +154,43 @@ class Ennemy(Entity):
             self.wall_check()
     
     def next_move_A_star(self):  # maybe TODO A* tunnel consideration
-        x, y = pathing.A_star((self.x, self.y), self.targeting(), self.no_backtrack(map_grid), (1, 3))[1]
+        x, y = pathing.A_star((self.x, self.y), self.chase_target(), self.no_backtrack(map_grid), (1, 3))[1]
         self.orientation = (x - self.x, y - self.y)
         self.vector_speed = tuple(self.scalar_speed * x for x in self.orientation)
 
     def next_move_triangulation(self):
-        x, y = pathing.triangulation((self.x, self.y), self.targeting(), self.no_backtrack(map_grid), (1, 3))
+        x, y = pathing.triangulation((self.x, self.y), self.chase_target(), self.no_backtrack(map_grid), (1, 3))
         self.orientation = (x-self.x, y-self.y)
         self.vector_speed = tuple(self.scalar_speed * x for x in self.orientation)
 
-    def blinky_targeting(self):
+    def blinky_target(self):
         return (pak.x, pak.y)
 
-    def pinky_targeting(self):
+    def pinky_target(self):
         return (pak.x + 4 * pak.orientation[0], pak.y + 4 * pak.orientation[1])
 
-    def inky_targeting(self):  # a blinky ennemy is required
+    def inky_target(self):  # a blinky ennemy is required
         return (
             (pak.x + 2 * pak.orientation[0] - blinky.x) * 2 + blinky.x, 
             (pak.y + 2 * pak.orientation[1] - blinky.y) * 2 + blinky.y
         )
     
-    def clyde_targeting(self):
+    def clyde_target(self):
         if ((pak.x - self.x) ** 2 + (pak.y - self.y) ** 2) ** 0.5 <= 8:
             return (0, len(map_grid) - 1)
         else:
-            return self.blinky_targeting()
+            return self.blinky_target()
     
-    def targeting_display(self, color, targeting):
-        circle = pygame.Surface((s.cu, s.cu))
-        circle.set_colorkey(s.black)
-        pygame.draw.circle(circle, color, (s.cu/2, s.cu/2), s.cu/3)
-        if targeting == inky.inky_targeting:
-            s.screen.blit(circle, tuple(i * s.cu for i in (pak.x + 2 * pak.orientation[0], 
-                                                           pak.y + 2 * pak.orientation[1])))
-        s.screen.blit(circle, tuple(i * s.cu for i in targeting()))
+    def target_display(self):
+        circle_surface = pygame.Surface((s.cu, s.cu))
+        circle_surface.set_colorkey(s.black)
+        pygame.draw.circle(circle_surface, self.surface.get_at(self.surface.get_rect().center), 
+                           (s.cu/2, s.cu/2), s.cu/3)
+        if self.chase_target == inky.inky_target:
+            s.screen.blit(circle_surface,
+                          tuple(i * s.cu for i in (pak.x + 2 * pak.orientation[0], 
+                                                   pak.y + 2 * pak.orientation[1])))
+        s.screen.blit(circle_surface, tuple(i * s.cu for i in self.chase_target()))
 
     def no_backtrack(self, array: list[list[int]]):
         temp_array = copy.deepcopy(array)
@@ -196,11 +208,14 @@ class Ennemy(Entity):
                 self.orientation_update((0, -1))
             else:
                 self.orientation_update((0, 1))
+
+    def turn_around(self):
+        self.orientation_update(tuple(-x for x in self.orientation))
             
 
 pak = Player(14, 23, 15, 'left', s.yellow)
 
-blinky = Ennemy(17, 23, 18, 'left', s.red, 'Blinky', 'blinky_targeting')
-inky = Ennemy(22, 14, 18, 'right', s.cyan, 'Inky', 'inky_targeting')
-pinky = Ennemy(16, 29, 18, 'right', s.pink, 'Pinky', 'pinky_targeting')
-clyde = Ennemy(21, 13, 18, 'up', s.orange, 'Clyde', 'clyde_targeting')
+blinky = Ennemy(17, 23, 18, 'left', s.red, 'Blinky', 'blinky_target')
+inky = Ennemy(22, 14, 18, 'right', s.cyan, 'Inky', 'inky_target')
+pinky = Ennemy(16, 29, 18, 'right', s.pink, 'Pinky', 'pinky_target')
+clyde = Ennemy(21, 13, 18, 'up', s.orange, 'Clyde', 'clyde_target')
