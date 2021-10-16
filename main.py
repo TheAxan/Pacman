@@ -25,7 +25,7 @@ while True:
     for entity in classes.Entity.entities:
         entity.routine()
     if display_targets:
-        for entity in filter(lambda e: type(e) == classes.Ennemy, classes.Entity.entities):
+        for entity in classes.Ennemy.ennemies:
             entity.targeting_display()
     clock.tick(60)
     timer += clock.get_time()
