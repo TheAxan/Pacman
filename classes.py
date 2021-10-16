@@ -201,6 +201,9 @@ class Ennemy(Entity):
                 self.orientation_update((0, -1))
             else:
                 self.orientation_update((0, 1))
+
+    def turn_around(self):
+        self.orientation_update(tuple(-x for x in self.orientation))
             
 
 pak = Player(14, 23, 15, 'left', s.yellow)
