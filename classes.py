@@ -148,12 +148,12 @@ class Ennemy(Entity):
             self.wall_check()
     
     def next_move_A_star(self):  # maybe TODO A* tunnel consideration
-        x, y = pathing.A_star((self.x, self.y), self.targeting(), self.no_backtrack(map_grid), (1, 3))[1]
+        x, y = pathing.A_star((self.x, self.y), self.chase_target(), self.no_backtrack(map_grid), (1, 3))[1]
         self.orientation = (x - self.x, y - self.y)
         self.vector_speed = tuple(self.scalar_speed * x for x in self.orientation)
 
     def next_move_triangulation(self):
-        x, y = pathing.triangulation((self.x, self.y), self.targeting(), self.no_backtrack(map_grid), (1, 3))
+        x, y = pathing.triangulation((self.x, self.y), self.chase_target(), self.no_backtrack(map_grid), (1, 3))
         self.orientation = (x-self.x, y-self.y)
         self.vector_speed = tuple(self.scalar_speed * x for x in self.orientation)
 
@@ -209,7 +209,7 @@ class Ennemy(Entity):
 
 pak = Player(14, 23, 15, 'left', s.yellow)
 
-blinky = Ennemy(17, 23, 18, 'left', s.red, 'Blinky', 'blinky_targeting')
-inky = Ennemy(22, 14, 18, 'right', s.cyan, 'Inky', 'inky_targeting')
-pinky = Ennemy(16, 29, 18, 'right', s.pink, 'Pinky', 'pinky_targeting')
-clyde = Ennemy(21, 13, 18, 'up', s.orange, 'Clyde', 'clyde_targeting')
+blinky = Ennemy(17, 23, 18, 'left', s.red, 'Blinky', 'blinky_target')
+inky = Ennemy(22, 14, 18, 'right', s.cyan, 'Inky', 'inky_target')
+pinky = Ennemy(16, 29, 18, 'right', s.pink, 'Pinky', 'pinky_target')
+clyde = Ennemy(21, 13, 18, 'up', s.orange, 'Clyde', 'clyde_target')
