@@ -5,11 +5,13 @@ from maps import default_map as map_grid
 map_width = len(map_grid[0])
 map_height = len(map_grid)
 
-cu = 16 # TODO switch to 8 so as to scale the screen only and remove sprite scaling, NOTE: this requires a speed/move_ip system overhaul due to int rounding affecting speed and immobilizing at 8
+cu = 16  # TODO switch to 8 so as to scale the screen only and remove sprite scaling, NOTE: this requires a speed/move_ip system overhaul due to int rounding affecting speed and immobilizing at 8
 screen = pygame.display.set_mode((map_width * cu, map_height * cu), pygame.SCALED)
 gu = cu * 2
 # gu is short for graphical_unit, cu for cell_unit
-# the long names would make most functions absurdly long (especially for gu drawings)
+# the long names would make most functions absurdly long (especially for gu drawings)  NOTE gu might be rendered obsoletet by sprites
+pygame.display.set_caption('Pacman')
+pygame.display.set_icon(pygame.image.load('img\pac2.png'))  # TODO switch this to east facing
 
 white = 255, 255, 255
 black = 0, 0, 0
