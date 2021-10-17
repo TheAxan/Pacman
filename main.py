@@ -14,6 +14,7 @@ sprite_update = pygame.event.custom_type()
 timer: int = 0
 clock = pygame.time.Clock()
 pygame.time.set_timer(sprite_update, 100)
+pygame.key.set_repeat(15)
 
 def chase_switch(duration):
     global timer
