@@ -5,14 +5,16 @@ import classes
 
 
 pygame.init()
-clock = pygame.time.Clock()
+
 display_targets: bool = False
-timer: int = 0
 chase_duration: int = 20000
 scatter_duration: int = 7000
 sprite_update = pygame.event.custom_type()
 
+timer: int = 0
+clock = pygame.time.Clock()
 pygame.time.set_timer(sprite_update, 100)
+
 def chase_switch(duration):
     global timer
     
