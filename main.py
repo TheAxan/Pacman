@@ -10,7 +10,9 @@ display_targets: bool = False
 timer: int = 0
 chase_duration: int = 20000
 scatter_duration: int = 7000
+sprite_update = pygame.event.custom_type()
 
+pygame.time.set_timer(sprite_update, 100)
 def chase_switch(duration):
     global timer
     
@@ -23,7 +25,9 @@ def chase_switch(duration):
 
 while True:
     for event in pygame.event.get():
-        if event.type == pygame.KEYDOWN:
+        if event.type == sprite_update:
+            classes.pak.next_sprite()
+        elif event.type == pygame.KEYDOWN:
             if event.key in (pygame.K_LEFT, pygame.K_UP, pygame.K_RIGHT, pygame.K_DOWN):
                 classes.pak.input_assignement(event.key)
             elif event.key is pygame.K_ESCAPE:
@@ -37,10 +41,11 @@ while True:
     if display_targets:
         for entity in classes.Ennemy.ennemies:
             entity.target_display()
+    pygame.display.flip()
+
     clock.tick(60)
     timer += clock.get_time()
     if classes.Ennemy.chase_mode:
         chase_switch(chase_duration)
     else:
         chase_switch(scatter_duration)
-    pygame.display.flip()

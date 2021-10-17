@@ -92,6 +92,8 @@ class Entity:
         )
         self.surface = next(self.sprites)
 
+    def next_sprite(self):
+        self.surface = next(self.sprites)
 
 class Player(Entity):
     def __init__(self, x: int, y: int, speed_divider: int, original_orientation: str) -> None:
@@ -122,6 +124,7 @@ class Player(Entity):
     
     def wall_reaction(self):
         self.vector_speed = (0, 0)
+        # TODO stop sprite
     
     def ghost_collision(self):
         for entity in Ennemy.ennemies:
@@ -245,7 +248,7 @@ class Ennemy(Entity):
 
 pak = Player(14, 23, 15, 'left')
 
-blinky = Ennemy(17, 23, 18, 'left', s.red, 'Blinky', 'up-right', 'blinky_target')
-inky = Ennemy(22, 14, 18, 'right', s.cyan, 'Inky', 'down-right', 'inky_target')
-pinky = Ennemy(16, 29, 18, 'right', s.pink, 'Pinky', 'up-left', 'pinky_target')
-clyde = Ennemy(21, 13, 18, 'up', s.orange, 'Clyde', 'down-left', 'clyde_target')
+# blinky = Ennemy(17, 23, 18, 'left', s.red, 'Blinky', 'up-right', 'blinky_target')
+# inky = Ennemy(22, 14, 18, 'right', s.cyan, 'Inky', 'down-right', 'inky_target')
+# pinky = Ennemy(16, 29, 18, 'right', s.pink, 'Pinky', 'up-left', 'pinky_target')
+# clyde = Ennemy(21, 13, 18, 'up', s.orange, 'Clyde', 'down-left', 'clyde_target')
