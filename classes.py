@@ -2,6 +2,7 @@ import pygame
 import pathing
 import sys
 import copy
+import itertools
 import screen as s
 from maps import default_map as map_grid
 
@@ -10,20 +11,19 @@ from maps import default_map as map_grid
 class Entity:
     entities: set[object] =  set()  # to loop through routines
     
+    orientation_to_degree = {
+            (0, -1): 270,
+            (-1, 0): 0,
+            (0, 1): 90,
+            (1, 0): 180,
+    }
+
     def __init__(self, x: int, y: int, speed_divider: int, original_orientation: str) -> None:
         Entity.entities.add(self)
         
         # self.x is the array x
         self.x: int = x
         self.y: int = y
-        
-        self.scalar_speed: float = s.cu / speed_divider
-        self.orientation_update({
-            'up': (0, -1),
-            'left': (-1, 0),
-            'down': (0, 1),
-            'right': (1, 0),
-        }[original_orientation])
 
         self.rect_surface = pygame.Surface((s.cu, s.cu))
         self.rect_surface.set_colorkey(s.black)
@@ -35,6 +35,14 @@ class Entity:
 
         self.surface = pygame.transform.scale(self.rect_surface, (s.gu, s.gu))
         self.graphic_rect = self.surface.get_rect()
+
+        self.scalar_speed: float = s.cu / speed_divider
+        self.orientation_update({  # note: this assigns self.orientation, self.vector_speed, and self.sprites
+            'up': (0, -1),
+            'left': (-1, 0),
+            'down': (0, 1),
+            'right': (1, 0),
+        }[original_orientation])
 
     def routine(self):
         self.full_cell_check()
@@ -72,13 +80,23 @@ class Entity:
     def orientation_update(self, new_orientation):
         self.orientation = new_orientation
         self.vector_speed = tuple(self.scalar_speed * x for x in self.orientation)
+        self.sprites = itertools.cycle(
+            pygame.transform.scale(
+                pygame.transform.rotate(
+                    pygame.image.load(f'img\pac{x}.png'), # TODO generalise this
+                    Entity.orientation_to_degree[self.orientation]
+                ),
+                self.surface.get_size()
+            ) 
+            for x in (0, 1, 2, 1)
+        )
+        self.surface = next(self.sprites)
 
 
 class Player(Entity):
-    def __init__(self, x: int, y: int, speed_divider: int, original_orientation: str, color: tuple[int]) -> None:
+    def __init__(self, x: int, y: int, speed_divider: int, original_orientation: str) -> None:
         super().__init__(x, y, speed_divider, original_orientation)
         self.input: tuple[int | float] | None = None
-        pygame.draw.circle(self.surface, color, (s.gu/2, s.gu/2), s.gu/2)
     
     def input_assignement(self, input):
         self.input = {
@@ -225,7 +243,7 @@ class Ennemy(Entity):
         self.orientation_update(tuple(-x for x in self.orientation))
             
 
-pak = Player(14, 23, 15, 'left', s.yellow)
+pak = Player(14, 23, 15, 'left')
 
 blinky = Ennemy(17, 23, 18, 'left', s.red, 'Blinky', 'up-right', 'blinky_target')
 inky = Ennemy(22, 14, 18, 'right', s.cyan, 'Inky', 'down-right', 'inky_target')
