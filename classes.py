@@ -114,12 +114,20 @@ class Player(Entity):
         self.wall_check()
         self.ghost_collision()
     
+    def input_is_real(self):
+        return self.input is not None and self.orientation != self.input
+    
+    def input_is_accessible(self): # cell to turn to isn't a wall
+        return map_grid[self.y + self.input[1]][self.x + self.input[0]] != 1
+        
+    def input_is_valid(self):
+        return (self.input_is_real() and 
+                self.input_is_accessible() and 
+                self.x in range(0, 27))
+
     def input_handling(self):
-        if self.input is not None:
-            if not (map_grid[self.y + self.input[1]]  # cell to turn to isn't a wall
-                            [self.x + self.input[0]]) == 1:
-                if self.x in range(0, 27):
-                    self.orientation_update(self.input)
+        if self.input_is_valid():
+            self.orientation_update(self.input)
             self.input = None
     
     def wall_reaction(self):
