@@ -65,13 +65,9 @@ class Entity:
             elif self.x == 28:
                 self.rect.x = -1 * s.cu
     
-    def wall_check(self):
-        if (map_grid[self.y + self.orientation[1]]  # cell ahead is a wall
-                    [self.x + self.orientation[0]]) == 1:
-            self.wall_reaction()
-
-    def wall_reaction():
-        pass # defined in subclass
+    def wall_ahead(self) -> bool:
+        return (map_grid[self.y + self.orientation[1]]
+                        [self.x + self.orientation[0]] == 1)
 
     def update_position(self):
         self.x = round(self.rect.x / s.cu)
@@ -111,7 +107,7 @@ class Player(Entity):
     def full_cell_routine(self):
         self.input_handling()
         self.tunnel_warp()
-        self.wall_check()
+        self.wall_handling()
         self.ghost_collision()
     
     def input_is_real(self):
@@ -130,9 +126,10 @@ class Player(Entity):
             self.orientation_update(self.input)
             self.input = None
     
-    def wall_reaction(self):
-        self.vector_speed = (0, 0)
-        # TODO stop sprite
+    def wall_handling(self):
+        if self.wall_ahead():
+            self.vector_speed = (0, 0)
+            # TODO stop sprite
     
     def ghost_collision(self):
         for entity in Ennemy.ennemies:
@@ -186,7 +183,7 @@ class Ennemy(Entity):
         if map_grid[self.y][self.x] == 2:
             self.next_move_triangulation()
         else:
-            self.wall_check()
+            self.wall_handling()
     
     def next_move_A_star(self):  # maybe TODO A* tunnel consideration
         x, y = pathing.A_star((self.x, self.y), self.target_selection(), self.no_backtrack(map_grid), (1, 3))[1]
@@ -238,17 +235,18 @@ class Ennemy(Entity):
         temp_array[self.y - self.orientation[1]][self.x - self.orientation[0]] = 1
         return temp_array
         
-    def wall_reaction(self):
-        if self.orientation[0] == 0:
-            if map_grid[self.y][self.x + 1] == 1:
-                self.orientation_update((-1, 0))
-            else:
-                self.orientation_update((1, 0))
-        elif self.orientation[1] == 0:
-            if map_grid[self.y + 1][self.x] == 1:
-                self.orientation_update((0, -1))
-            else:
-                self.orientation_update((0, 1))
+    def wall_handling(self):
+        if self.wall_ahead():
+            if self.orientation[0] == 0:
+                if map_grid[self.y][self.x + 1] == 1:
+                    self.orientation_update((-1, 0))
+                else:
+                    self.orientation_update((1, 0))
+            elif self.orientation[1] == 0:
+                if map_grid[self.y + 1][self.x] == 1:
+                    self.orientation_update((0, -1))
+                else:
+                    self.orientation_update((0, 1))
 
     def turn_around(self):
         self.orientation_update(tuple(-x for x in self.orientation))
