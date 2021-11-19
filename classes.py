@@ -18,7 +18,7 @@ class Entity:
             (1, 0): 180,
     }
 
-    def __init__(self, x: int, y: int, speed_divider: int, original_orientation: str) -> None:
+    def __init__(self, x: int, y: int, speed: int, original_orientation: str) -> None:
         Entity.entities.add(self)
         
         # self.x is the array x
@@ -28,15 +28,12 @@ class Entity:
         self.rect_surface = pygame.Surface((s.cu, s.cu))
         self.rect_surface.set_colorkey(s.black)
 
-        # self.rect.x is the pixel x
-        self.rect = self.rect_surface.get_rect()
-        self.rect.x = x * s.cu
-        self.rect.y = y * s.cu
+        self.offset = [x, y]
 
         self.surface = pygame.transform.scale(self.rect_surface, (s.gu, s.gu))
         self.graphic_rect = self.surface.get_rect()
 
-        self.scalar_speed: float = s.cu / speed_divider
+        self.scalar_speed: float = speed  # cells/frame
         self.orientation_update({  # note: this assigns self.orientation, self.vector_speed, and self.sprites
             'up': (0, -1),
             'left': (-1, 0),
@@ -46,13 +43,13 @@ class Entity:
 
     def routine(self):
         self.full_cell_check()
-        self.rect.move_ip(self.vector_speed)
+        self.move()
         self.update_position()
-        self.graphic_rect.center = self.rect.center
+        self.graphic_rect.center = (self.offset[0] * s.cu + s.cu/2, self.offset[1] * s.cu + s.cu/2)
         s.screen.blit(self.surface, self.graphic_rect)
     
     def full_cell_check(self):
-        if self.x == self.rect.x / s.cu and self.y == self.rect.y / s.cu:  # on a full cell
+        if self.x == round(self.offset[0], 3) and self.y == round(self.offset[1], 3):  # on a full cell
             self.full_cell_routine()
     
     def full_cell_routine(self):
@@ -61,17 +58,21 @@ class Entity:
     def tunnel_warp(self):
         if self.y == 14:
             if self.x == -1:
-                self.rect.x = 28 * s.cu
+                self.offset[0] = 28
             elif self.x == 28:
-                self.rect.x = -1 * s.cu
+                self.offset[0] = -1
     
     def wall_ahead(self) -> bool:
         return (map_grid[self.y + self.orientation[1]]
                         [self.x + self.orientation[0]] == 1)
 
+    def move(self):
+        self.offset[0] += self.vector_speed[0]
+        self.offset[1] += self.vector_speed[1]
+
     def update_position(self):
-        self.x = round(self.rect.x / s.cu)
-        self.y = round(self.rect.y / s.cu)
+        self.x = round(self.offset[0])
+        self.y = round(self.offset[1])
 
     def orientation_update(self, new_orientation):
         self.orientation = new_orientation
@@ -92,8 +93,8 @@ class Entity:
         self.surface = next(self.sprites)
 
 class Player(Entity):
-    def __init__(self, x: int, y: int, speed_divider: int, original_orientation: str) -> None:
-        super().__init__(x, y, speed_divider, original_orientation)
+    def __init__(self, x: int, y: int, speed: int, original_orientation: str) -> None:
+        super().__init__(x, y, speed, original_orientation)
         self.input: tuple[int | float] | None = None
     
     def input_assignement(self, input):
@@ -137,18 +138,13 @@ class Player(Entity):
     
 
 class Ennemy(Entity):
-    ghost_template = pygame.Surface((s.gu, s.gu))
-    pygame.draw.circle(ghost_template, s.white, (s.gu/2, s.gu/2), s.gu/2)
-    pygame.draw.rect(ghost_template, s.black, (0, s.gu/2, s.gu, s.gu/2))
-    pygame.draw.polygon(ghost_template, s.white, (
-        (0, s.gu/2), (0, s.gu), (s.gu/4, s.gu*3/4), (s.gu/2, s.gu), (s.gu*3/4, s.gu*3/4), (s.gu, s.gu), (s.gu, s.gu/2)))
 
     chase_mode: bool = False
     ennemies: set[object] = set()
     
-    def __init__(self, x: int, y: int, speed_divider: int, original_orientation: str, 
+    def __init__(self, x: int, y: int, speed: int, original_orientation: str, 
                  color: tuple[int], name: str, scatter_target, chase_target) -> None:
-        super().__init__(x, y, speed_divider, original_orientation)
+        super().__init__(x, y, speed, original_orientation)
         
         self.surface.blit(Ennemy.ghost_template, (0, 0))
         self.surface.fill(color, special_flags=pygame.BLEND_MULT)
@@ -175,7 +171,7 @@ class Ennemy(Entity):
         self.tunnel_warp()
 
     def player_collision(self):
-        if self.rect.colliderect(pak.rect):
+        if self.graphic_rect.colliderect(pak.graphic_rect):
             print(f'Game over, {self.name} got you')  # maybe TODO game over screen
             sys.exit()
     
@@ -252,7 +248,7 @@ class Ennemy(Entity):
         self.orientation_update(tuple(-x for x in self.orientation))
             
 
-pak = Player(14, 23, 15, 'left')
+pak = Player(14, 23, 1/6, 'left')
 
 # blinky = Ennemy(17, 23, 18, 'left', s.red, 'Blinky', 'up-right', 'blinky_target')
 # inky = Ennemy(22, 14, 18, 'right', s.cyan, 'Inky', 'down-right', 'inky_target')

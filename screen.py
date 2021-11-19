@@ -5,7 +5,7 @@ from maps import default_map as map_grid
 map_width = len(map_grid[0])
 map_height = len(map_grid)
 
-cu = 16  # TODO switch to 8 so as to scale the screen only and remove sprite scaling, NOTE: this requires a speed/move_ip system overhaul due to int rounding affecting speed and immobilizing at 8
+cu = 8
 screen = pygame.display.set_mode((map_width * cu, map_height * cu), pygame.SCALED)
 gu = cu * 2
 # gu is short for graphical_unit, cu for cell_unit
@@ -27,7 +27,7 @@ background = pygame.Surface((map_width * cu, map_height * cu))
 
 square = pygame.Surface((cu, cu))
 square.fill(blue)
-pygame.draw.rect(square, black, (0, 0, cu, cu), int(gu/2.5))
+pygame.draw.rect(square, black, (0, 0, cu, cu), (cu//8)*6)
 
 for y_counter, row in enumerate(map_grid):
     for x_counter, cell in enumerate(row):
