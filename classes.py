@@ -25,12 +25,9 @@ class Entity:
         self.x: int = x
         self.y: int = y
 
-        self.rect_surface = pygame.Surface((s.cu, s.cu))
-        self.rect_surface.set_colorkey(s.black)
-
         self.offset = [x, y]
 
-        self.surface = pygame.transform.scale(self.rect_surface, (s.gu, s.gu))
+        self.surface = pygame.Surface((s.gu, s.gu))
         self.graphic_rect = self.surface.get_rect()
 
         self.scalar_speed: float = speed  # cells/frame
