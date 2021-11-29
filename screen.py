@@ -11,7 +11,7 @@ gu = cu * 2
 # gu is short for graphical_unit, cu for cell_unit
 # the long names would make most functions absurdly long (especially for gu drawings)  NOTE gu might be rendered obsoletet by sprites
 pygame.display.set_caption('Pacman')
-pygame.display.set_icon(pygame.image.load('img\pac2.png'))  # TODO switch this to east facing
+pygame.display.set_icon(pygame.image.load('image_files\pac_right_2.png'))
 
 white = 255, 255, 255
 black = 0, 0, 0

@@ -11,17 +11,17 @@ from maps import default_map as map_grid
 class Entity:
     entities: set[object] =  set()  # to loop through routines
     
-    direction_to_degree = {
-            (0, -1): 270,
-            (-1, 0): 0,
-            (0, 1): 90,
-            (1, 0): 180,
+    direction_vector_to_direction = {
+            (0, -1): 'up',
+            (-1, 0): 'left',
+            (0, 1): 'down',
+            (1, 0): 'right',
     }
 
     def __init__(self, x: int, y: int, speed: int, direction: str, name: str) -> None:
         Entity.entities.add(self)
         self.name = name
-        
+
         # self.x is the array x
         self.x: int = x
         self.y: int = y
@@ -75,16 +75,14 @@ class Entity:
 
     def direction_update(self, new_direction):
         self.direction_vector = new_direction
+        self.direction = Entity.direction_vector_to_direction[self.direction_vector]
         self.vector_speed = tuple(self.scalar_speed * x for x in self.direction_vector)
         self.sprites = itertools.cycle(
             pygame.transform.scale(
-                pygame.transform.rotate(
-                    pygame.image.load(f'image_files\pac{x}.png'), # TODO generalise this
-                    Entity.direction_to_degree[self.direction_vector]
-                ),
+                pygame.image.load(f'image_files\{self.name}_{self.direction}_{sprite_number}.png'), # TODO generalise this
                 self.surface.get_size()
             ) 
-            for x in (0, 1, 2, 1)
+            for sprite_number in (0, 1, 2, 1)
         )
         self.surface = next(self.sprites)
 
@@ -92,8 +90,8 @@ class Entity:
         self.surface = next(self.sprites)
 
 class Player(Entity):
-    def __init__(self, x: int, y: int, speed: int, direction: str) -> None:
-        super().__init__(x, y, speed, direction)
+    def __init__(self, x: int, y: int, speed: int, direction: str, name: str) -> None:
+        super().__init__(x, y, speed, direction, name)
         self.input: tuple[int | float] | None = None
     
     def input_assignement(self, input):
