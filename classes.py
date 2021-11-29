@@ -11,14 +11,14 @@ from maps import default_map as map_grid
 class Entity:
     entities: set[object] =  set()  # to loop through routines
     
-    orientation_to_degree = {
+    direction_to_degree = {
             (0, -1): 270,
             (-1, 0): 0,
             (0, 1): 90,
             (1, 0): 180,
     }
 
-    def __init__(self, x: int, y: int, speed: int, original_orientation: str) -> None:
+    def __init__(self, x: int, y: int, speed: int, direction: str) -> None:
         Entity.entities.add(self)
         
         # self.x is the array x
@@ -31,12 +31,12 @@ class Entity:
         self.graphic_rect = self.surface.get_rect()
 
         self.scalar_speed: float = speed  # cells/frame
-        self.orientation_update({  # note: this assigns self.orientation, self.vector_speed, and self.sprites
+        self.direction_update({  # note: this assigns self.direction_vector, self.vector_speed, and self.sprites
             'up': (0, -1),
             'left': (-1, 0),
             'down': (0, 1),
             'right': (1, 0),
-        }[original_orientation])
+        }[direction])
 
     def routine(self):
         self.full_cell_check()
@@ -60,8 +60,8 @@ class Entity:
                 self.offset[0] = -1
     
     def wall_ahead(self) -> bool:
-        return (map_grid[self.y + self.orientation[1]]
-                        [self.x + self.orientation[0]] == 1)
+        return (map_grid[self.y + self.direction_vector[1]]
+                        [self.x + self.direction_vector[0]] == 1)
 
     def move(self):
         self.offset[0] += self.vector_speed[0]
@@ -71,14 +71,14 @@ class Entity:
         self.x = round(self.offset[0])
         self.y = round(self.offset[1])
 
-    def orientation_update(self, new_orientation):
-        self.orientation = new_orientation
-        self.vector_speed = tuple(self.scalar_speed * x for x in self.orientation)
+    def direction_update(self, new_direction):
+        self.direction_vector = new_direction
+        self.vector_speed = tuple(self.scalar_speed * x for x in self.direction_vector)
         self.sprites = itertools.cycle(
             pygame.transform.scale(
                 pygame.transform.rotate(
-                    pygame.image.load(f'img\pac{x}.png'), # TODO generalise this
-                    Entity.orientation_to_degree[self.orientation]
+                    pygame.image.load(f'image_files\pac{x}.png'), # TODO generalise this
+                    Entity.direction_to_degree[self.direction_vector]
                 ),
                 self.surface.get_size()
             ) 
@@ -90,8 +90,8 @@ class Entity:
         self.surface = next(self.sprites)
 
 class Player(Entity):
-    def __init__(self, x: int, y: int, speed: int, original_orientation: str) -> None:
-        super().__init__(x, y, speed, original_orientation)
+    def __init__(self, x: int, y: int, speed: int, direction: str) -> None:
+        super().__init__(x, y, speed, direction)
         self.input: tuple[int | float] | None = None
     
     def input_assignement(self, input):
@@ -109,7 +109,7 @@ class Player(Entity):
         self.ghost_collision()
     
     def input_is_real(self):
-        return self.input is not None and self.orientation != self.input
+        return self.input is not None and self.direction_vector != self.input
     
     def input_is_accessible(self): # cell to turn to isn't a wall
         return map_grid[self.y + self.input[1]][self.x + self.input[0]] != 1
@@ -121,7 +121,7 @@ class Player(Entity):
 
     def input_handling(self):
         if self.input_is_valid():
-            self.orientation_update(self.input)
+            self.direction_update(self.input)
             self.input = None
     
     def wall_handling(self):
@@ -139,9 +139,9 @@ class Ennemy(Entity):
     chase_mode: bool = False
     ennemies: set[object] = set()
     
-    def __init__(self, x: int, y: int, speed: int, original_orientation: str, 
+    def __init__(self, x: int, y: int, speed: int, direction: str, 
                  color: tuple[int], name: str, scatter_target, chase_target) -> None:
-        super().__init__(x, y, speed, original_orientation)
+        super().__init__(x, y, speed, direction)
         
         self.surface.blit(Ennemy.ghost_template, (0, 0))
         self.surface.fill(color, special_flags=pygame.BLEND_MULT)
@@ -180,13 +180,13 @@ class Ennemy(Entity):
     
     def next_move_A_star(self):  # maybe TODO A* tunnel consideration
         x, y = pathing.A_star((self.x, self.y), self.target_selection(), self.no_backtrack(map_grid), (1, 3))[1]
-        self.orientation = (x - self.x, y - self.y)
-        self.vector_speed = tuple(self.scalar_speed * x for x in self.orientation)
+        self.direction_vector = (x - self.x, y - self.y)
+        self.vector_speed = tuple(self.scalar_speed * x for x in self.direction_vector)
 
     def next_move_triangulation(self):
         x, y = pathing.triangulation((self.x, self.y), self.target_selection(), self.no_backtrack(map_grid), (1, 3))
-        self.orientation = (x-self.x, y-self.y)
-        self.vector_speed = tuple(self.scalar_speed * x for x in self.orientation)
+        self.direction_vector = (x-self.x, y-self.y)
+        self.vector_speed = tuple(self.scalar_speed * x for x in self.direction_vector)
 
     def target_selection(self):
         if Ennemy.chase_mode:
@@ -198,12 +198,12 @@ class Ennemy(Entity):
         return (pak.x, pak.y)
 
     def pinky_target(self):
-        return (pak.x + 4 * pak.orientation[0], pak.y + 4 * pak.orientation[1])
+        return (pak.x + 4 * pak.direction_vector[0], pak.y + 4 * pak.direction_vector[1])
 
     def inky_target(self):  # a blinky ennemy is required
         return (
-            (pak.x + 2 * pak.orientation[0] - blinky.x) * 2 + blinky.x, 
-            (pak.y + 2 * pak.orientation[1] - blinky.y) * 2 + blinky.y
+            (pak.x + 2 * pak.direction_vector[0] - blinky.x) * 2 + blinky.x, 
+            (pak.y + 2 * pak.direction_vector[1] - blinky.y) * 2 + blinky.y
         )
     
     def clyde_target(self):
@@ -219,30 +219,30 @@ class Ennemy(Entity):
                            (s.cu/2, s.cu/2), s.cu/3)
         if self.chase_target == inky.inky_target:
             s.screen.blit(circle_surface,
-                          tuple(i * s.cu for i in (pak.x + 2 * pak.orientation[0], 
-                                                   pak.y + 2 * pak.orientation[1])))
+                          tuple(i * s.cu for i in (pak.x + 2 * pak.direction_vector[0], 
+                                                   pak.y + 2 * pak.direction_vector[1])))
         s.screen.blit(circle_surface, tuple(i * s.cu for i in self.target_selection()))
 
     def no_backtrack(self, array: list[list[int]]):
         temp_array = copy.deepcopy(array)
-        temp_array[self.y - self.orientation[1]][self.x - self.orientation[0]] = 1
+        temp_array[self.y - self.direction_vector[1]][self.x - self.direction_vector[0]] = 1
         return temp_array
         
     def wall_handling(self):
         if self.wall_ahead():
-            if self.orientation[0] == 0:
+            if self.direction_vector[0] == 0:
                 if map_grid[self.y][self.x + 1] == 1:
-                    self.orientation_update((-1, 0))
+                    self.direction_update((-1, 0))
                 else:
-                    self.orientation_update((1, 0))
-            elif self.orientation[1] == 0:
+                    self.direction_update((1, 0))
+            elif self.direction_vector[1] == 0:
                 if map_grid[self.y + 1][self.x] == 1:
-                    self.orientation_update((0, -1))
+                    self.direction_update((0, -1))
                 else:
-                    self.orientation_update((0, 1))
+                    self.direction_update((0, 1))
 
     def turn_around(self):
-        self.orientation_update(tuple(-x for x in self.orientation))
+        self.direction_update(tuple(-x for x in self.direction_vector))
             
 
 pak = Player(14, 23, 1/6, 'left')
