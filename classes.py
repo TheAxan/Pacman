@@ -18,8 +18,9 @@ class Entity:
             (1, 0): 180,
     }
 
-    def __init__(self, x: int, y: int, speed: int, direction: str) -> None:
+    def __init__(self, x: int, y: int, speed: int, direction: str, name: str) -> None:
         Entity.entities.add(self)
+        self.name = name
         
         # self.x is the array x
         self.x: int = x
@@ -37,6 +38,7 @@ class Entity:
             'down': (0, 1),
             'right': (1, 0),
         }[direction])
+
 
     def routine(self):
         self.full_cell_check()
@@ -140,12 +142,11 @@ class Ennemy(Entity):
     ennemies: set[object] = set()
     
     def __init__(self, x: int, y: int, speed: int, direction: str, 
-                 color: tuple[int], name: str, scatter_target, chase_target) -> None:
-        super().__init__(x, y, speed, direction)
+                 name: str, color: tuple[int], scatter_target, chase_target) -> None:
+        super().__init__(x, y, speed, direction, name)
         
         self.surface.blit(Ennemy.ghost_template, (0, 0))
         self.surface.fill(color, special_flags=pygame.BLEND_MULT)
-        self.name = name
         self.scatter_target = {
             'up-left': (0, 0),
             'up-right': (len(map_grid[0]) - 1, 0),
@@ -169,7 +170,7 @@ class Ennemy(Entity):
 
     def player_collision(self):
         if self.graphic_rect.colliderect(pak.graphic_rect):
-            print(f'Game over, {self.name} got you')  # maybe TODO game over screen
+            print(f'Game over, {self.name.capitalize()} got you')  # maybe TODO game over screen
             sys.exit()
     
     def intersection_check(self):
@@ -245,9 +246,9 @@ class Ennemy(Entity):
         self.direction_update(tuple(-x for x in self.direction_vector))
             
 
-pak = Player(14, 23, 1/6, 'left')
+pak = Player(14, 23, 1/6, 'left', 'pac')
 
-# blinky = Ennemy(17, 23, 18, 'left', s.red, 'Blinky', 'up-right', 'blinky_target')
-# inky = Ennemy(22, 14, 18, 'right', s.cyan, 'Inky', 'down-right', 'inky_target')
-# pinky = Ennemy(16, 29, 18, 'right', s.pink, 'Pinky', 'up-left', 'pinky_target')
-# clyde = Ennemy(21, 13, 18, 'up', s.orange, 'Clyde', 'down-left', 'clyde_target')
+# blinky = Ennemy(17, 23, 18, 'left', 'blinky', s.red, 'up-right', 'blinky_target')
+# inky = Ennemy(22, 14, 18, 'right', 'inky', s.cyan, 'down-right', 'inky_target')
+# pinky = Ennemy(16, 29, 18, 'right', 'pinky', s.pink, 'up-left', 'pinky_target')
+# clyde = Ennemy(21, 13, 18, 'up', 'clyde', s.orange, 'down-left', 'clyde_target')
