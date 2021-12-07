@@ -5,8 +5,15 @@ from maps import default_map as map_grid
 map_width = len(map_grid[0])
 map_height = len(map_grid)
 
+def scaled_option(toggle):
+    if toggle:
+        return pygame.SCALED
+    else:
+        return 0
+
 cu = 8
-screen = pygame.display.set_mode((map_width * cu, map_height * cu), pygame.SCALED)
+scaling_toggle: bool = True
+screen = pygame.display.set_mode((map_width * cu, map_height * cu), scaled_option(scaling_toggle))
 gu = cu * 2
 # gu is short for graphical_unit, cu for cell_unit
 # the long names would make most functions absurdly long (especially for gu drawings)  NOTE gu might be rendered obsoletet by sprites
