@@ -151,16 +151,18 @@ class Ennemy(Entity):
     
     def __init__(self, x: int, y: int, speed: int, direction: str, 
                  name: str, color: tuple[int], scatter_target, chase_target) -> None:
-        super().__init__(x, y, speed, direction, name)
         
-        self.surface.blit(Ennemy.ghost_template, (0, 0))
-        self.surface.fill(color, special_flags=pygame.BLEND_MULT)
+        self.color = color
+
+        super().__init__(x, y, speed, direction, name)
+
         self.scatter_target = {
             'up-left': (0, 0),
             'up-right': (len(map_grid[0]) - 1, 0),
             'down-left': (0, len(map_grid) -1 ),
             'down-right': (len(map_grid[0]) -1, len(map_grid) -1),
         }.get(scatter_target, 'up-left')
+        
         self.chase_target = {
             'blinky_target': self.blinky_target,
             'pinky_target': self.pinky_target,
