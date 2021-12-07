@@ -52,7 +52,7 @@ class Entity:
             self.full_cell_routine()
     
     def full_cell_routine(self):
-        pass  # defined in subclass
+        raise NotImplementedError
 
     def tunnel_warp(self):
         if self.y == 14:
@@ -80,11 +80,11 @@ class Entity:
         self.sprite_update()
 
     def sprite_update(self):
-        self.sprites = itertools.cycle(
-            pygame.image.load(f'image_files\{self.name}_{self.direction}_{sprite_number}.png')# TODO generalise this
-            for sprite_number in (0, 1, 2, 1)
-        )
+        self.sprites = itertools.cycle(self.sprite_cycle())
         self.next_sprite()
+
+    def sprite_cycle(self):
+        raise NotImplementedError
 
     def next_sprite(self):
         self.surface = next(self.sprites)
@@ -132,6 +132,12 @@ class Player(Entity):
     def ghost_collision(self):
         for entity in Ennemy.ennemies:
             entity.player_collision()
+    
+    def sprite_cycle(self):
+        return (
+            pygame.image.load(f'image_files\{self.name}_{self.direction}_{sprite_number}.png')
+            for sprite_number in (0, 1, 2, 1)
+        )
     
 
 class Ennemy(Entity):
