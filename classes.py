@@ -77,14 +77,14 @@ class Entity:
         self.direction_vector = new_direction
         self.direction = Entity.direction_vector_to_direction[self.direction_vector]
         self.vector_speed = tuple(self.scalar_speed * x for x in self.direction_vector)
+        self.sprite_update()
+
+    def sprite_update(self):
         self.sprites = itertools.cycle(
-            pygame.transform.scale(
-                pygame.image.load(f'image_files\{self.name}_{self.direction}_{sprite_number}.png'), # TODO generalise this
-                self.surface.get_size()
-            ) 
+            pygame.image.load(f'image_files\{self.name}_{self.direction}_{sprite_number}.png')# TODO generalise this
             for sprite_number in (0, 1, 2, 1)
         )
-        self.surface = next(self.sprites)
+        self.next_sprite()
 
     def next_sprite(self):
         self.surface = next(self.sprites)
