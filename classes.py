@@ -30,6 +30,7 @@ class Entity:
 
         self.surface = pygame.Surface((s.gu, s.gu))
         self.graphic_rect = self.surface.get_rect()
+        self.graphic_update()
 
         self.scalar_speed: float = speed  # cells/frame
         self.direction_update({  # note: this assigns self.direction_vector, self.vector_speed, and self.sprites
@@ -44,6 +45,9 @@ class Entity:
         self.full_cell_check()
         self.move()
         self.update_position()
+        self.graphic_update()
+    
+    def graphic_update(self):
         self.graphic_rect.center = (self.offset[0] * s.cu + s.cu/2, self.offset[1] * s.cu + s.cu/2)
         s.screen.blit(self.surface, self.graphic_rect)
     
