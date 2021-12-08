@@ -271,7 +271,7 @@ class Ennemy(Entity):
 
 pak = Player(14, 23, 1/6, 'left', 'pac')
 
-# blinky = Ennemy(17, 23, 1/8, 'left', 'blinky', s.red, 'up-right', 'blinky_target')
-# inky = Ennemy(22, 14, 1/8, 'right', 'inky', s.cyan, 'down-right', 'inky_target')
-# pinky = Ennemy(16, 29, 1/8, 'right', 'pinky', s.pink, 'up-left', 'pinky_target')
-# clyde = Ennemy(21, 13, 1/8, 'up', 'clyde', s.orange, 'down-left', 'clyde_target')
+blinky = Ennemy(17, 23, 1/8, 'left', 'blinky', s.red, 'up-right', 'blinky_target')
+inky = Ennemy(22, 14, 1/8, 'right', 'inky', s.cyan, 'down-right', 'inky_target')
+pinky = Ennemy(16, 29, 1/8, 'right', 'pinky', s.pink, 'up-left', 'pinky_target')
+clyde = Ennemy(21, 13, 1/8, 'up', 'clyde', s.orange, 'down-left', 'clyde_target')
