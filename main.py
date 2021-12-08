@@ -29,7 +29,8 @@ def chase_switch(duration):
 while True:
     for event in pygame.event.get():
         if event.type == sprite_update:
-            classes.pak.next_sprite()
+            for entity in classes.Entity.entities:
+                entity.next_sprite()
         elif event.type == pygame.KEYDOWN:
             if event.key in (pygame.K_LEFT, pygame.K_UP, pygame.K_RIGHT, pygame.K_DOWN):
                 classes.pak.input_assignement(event.key)
