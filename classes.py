@@ -252,6 +252,21 @@ class Ennemy(Entity):
 
     def turn_around(self):
         self.direction_update(tuple(-x for x in self.direction_vector))
+    
+    def sprite_cycle(self):
+        return (
+            self.create_sprite(sprite_number)
+            for sprite_number in (0, 1)
+        )
+    
+    def create_sprite(self, sprite_number):
+        sprite = pygame.image.load(f'image_files\ghost_body_{sprite_number}.png')
+        sprite.fill(self.color, special_flags=pygame.BLEND_MULT)
+        sprite.blit(
+            pygame.image.load(f'image_files\ghost_eyes_{self.direction}.png'),
+            (0, 0)
+        )
+        return sprite
             
 
 pak = Player(14, 23, 1/6, 'left', 'pac')
