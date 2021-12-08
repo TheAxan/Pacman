@@ -191,13 +191,11 @@ class Ennemy(Entity):
     
     def next_move_A_star(self):  # maybe TODO A* tunnel consideration
         x, y = pathing.A_star((self.x, self.y), self.target_selection(), self.no_backtrack(map_grid), (1, 3))[1]
-        self.direction_vector = (x - self.x, y - self.y)
-        self.vector_speed = tuple(self.scalar_speed * x for x in self.direction_vector)
+        self.direction_update((x - self.x, y - self.y))
 
     def next_move_triangulation(self):
         x, y = pathing.triangulation((self.x, self.y), self.target_selection(), self.no_backtrack(map_grid), (1, 3))
-        self.direction_vector = (x-self.x, y-self.y)
-        self.vector_speed = tuple(self.scalar_speed * x for x in self.direction_vector)
+        self.direction_update((x - self.x, y - self.y))
 
     def target_selection(self):
         if Ennemy.chase_mode:
