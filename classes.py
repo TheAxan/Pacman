@@ -179,7 +179,7 @@ class Ennemy(Entity):
         self.tunnel_warp()
 
     def player_collision(self):
-        if self.graphic_rect.colliderect(pak.graphic_rect):
+        if self.x == pak.x and self.y == pak.y:
             print(f'Game over, {self.name.capitalize()} got you')  # maybe TODO game over screen
             sys.exit()
     
