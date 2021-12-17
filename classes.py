@@ -11,7 +11,7 @@ from maps import default_map as map_grid
 class Entity:
     entities: set[object] =  set()  # to loop through routines
     
-    direction_vector_to_direction = {
+    direction_conversion = {
             (0, -1): 'up',
             (-1, 0): 'left',
             (0, 1): 'down',
@@ -22,23 +22,25 @@ class Entity:
         Entity.entities.add(self)
         self.name = name
 
-        # self.x is the array x
+        # self.x is the array index
         self.x: int = x
         self.y: int = y
 
-        self.offset = [x, y]
+        self.offset: list[float] = [x, y]
 
         self.surface = pygame.Surface((s.gu, s.gu))
         self.graphic_rect = self.surface.get_rect()
         self.graphic_update()
 
         self.scalar_speed: float = speed  # cells/frame
-        self.direction_update({  # note: this assigns self.direction_vector, self.vector_speed, and self.sprites
-            'up': (0, -1),
-            'left': (-1, 0),
-            'down': (0, 1),
-            'right': (1, 0),
-        }[direction])
+        self.direction_update(
+            {
+                'up': (0, -1),
+                'left': (-1, 0),
+                'down': (0, 1),
+                'right': (1, 0),
+            }[direction]
+        )
 
 
     def routine(self):
@@ -52,7 +54,7 @@ class Entity:
         s.screen.blit(self.surface, self.graphic_rect)
     
     def full_cell_check(self):
-        if self.x == round(self.offset[0], 3) and self.y == round(self.offset[1], 3):  # on a full cell
+        if self.x == round(self.offset[0], 3) and self.y == round(self.offset[1], 3):
             self.full_cell_routine()
     
     def full_cell_routine(self):
@@ -78,9 +80,9 @@ class Entity:
         self.y = round(self.offset[1])
 
     def direction_update(self, new_direction):
-        self.direction_vector: tuple = new_direction
-        self.direction = Entity.direction_vector_to_direction[self.direction_vector]
-        self.vector_speed = tuple(self.scalar_speed * x for x in self.direction_vector)
+        self.direction_vector: tuple[int] = new_direction
+        self.direction: str = Entity.direction_conversion[self.direction_vector]
+        self.vector_speed: tuple[float] = tuple(self.scalar_speed * i for i in self.direction_vector)
         self.sprite_update()
 
     def sprite_update(self):
@@ -119,7 +121,7 @@ class Player(Entity):
     def input_is_accessible(self): # cell to turn to isn't a wall
         return map_grid[self.y + self.input[1]][self.x + self.input[0]] != 1
         
-    def input_is_valid(self):
+    def input_is_valid(self) -> bool:
         return (self.input_is_real() and 
                 self.input_is_accessible() and 
                 self.x in range(0, 27))
@@ -169,7 +171,6 @@ class Ennemy(Entity):
             'inky_target': self.inky_target,
             'clyde_target': self.clyde_target,
         }.get(chase_target, 'blinky_targe')
-
 
         Ennemy.ennemies.add(self)
 
