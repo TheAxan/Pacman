@@ -78,7 +78,7 @@ class Entity:
         self.y = round(self.offset[1])
 
     def direction_update(self, new_direction):
-        self.direction_vector = new_direction
+        self.direction_vector: tuple = new_direction
         self.direction = Entity.direction_vector_to_direction[self.direction_vector]
         self.vector_speed = tuple(self.scalar_speed * x for x in self.direction_vector)
         self.sprite_update()
@@ -91,7 +91,8 @@ class Entity:
         raise NotImplementedError
 
     def next_sprite(self):
-        self.surface = next(self.sprites)
+        if any(self.vector_speed):
+            self.surface = next(self.sprites)
 
 class Player(Entity):
     def __init__(self, x: int, y: int, speed: int, direction: str, name: str) -> None:
@@ -131,7 +132,6 @@ class Player(Entity):
     def wall_handling(self):
         if self.wall_ahead():
             self.vector_speed = (0, 0)
-            # TODO stop sprite
     
     def ghost_collision(self):
         for entity in Ennemy.ennemies:
