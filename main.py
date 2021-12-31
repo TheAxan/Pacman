@@ -33,7 +33,7 @@ while True:
     for event in pygame.event.get():
         if event.type == sprite_update:
             for entity in classes.Entity.entities:
-                entity.next_sprite()
+                entity.sprite_next()
         elif event.type == pygame.KEYDOWN:
             if event.key in (pygame.K_LEFT, pygame.K_UP, pygame.K_RIGHT, pygame.K_DOWN):
                 classes.pak.input_assignement(event.key)
@@ -55,7 +55,7 @@ while True:
 
     clock.tick(60)
     timer += clock.get_time()
-
+    
     if classes.Ennemy.chase_mode:
         chase_switch(chase_duration)
     else:
