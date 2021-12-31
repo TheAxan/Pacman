@@ -11,7 +11,7 @@ from maps import default_map as map_grid
 class Entity:
     entities: set[object] =  set()  # to loop through routines
     
-    direction_vector_to_direction = {
+    direction_conversion = {
             (0, -1): 'up',
             (-1, 0): 'left',
             (0, 1): 'down',
@@ -22,23 +22,25 @@ class Entity:
         Entity.entities.add(self)
         self.name = name
 
-        # self.x is the array x
+        # self.x is the array index
         self.x: int = x
         self.y: int = y
 
-        self.offset = [x, y]
+        self.offset: list[float] = [x, y]
 
         self.surface = pygame.Surface((s.gu, s.gu))
         self.graphic_rect = self.surface.get_rect()
         self.graphic_update()
 
-        self.scalar_speed: float = speed  # cells/frame
-        self.direction_update({  # note: this assigns self.direction_vector, self.vector_speed, and self.sprites
-            'up': (0, -1),
-            'left': (-1, 0),
-            'down': (0, 1),
-            'right': (1, 0),
-        }[direction])
+        self.speed_scalar: float = speed  # cells/frame
+        self.direction_update(
+            {
+                'up': (0, -1),
+                'left': (-1, 0),
+                'down': (0, 1),
+                'right': (1, 0),
+            }[direction]
+        )
 
 
     def routine(self):
@@ -52,7 +54,7 @@ class Entity:
         s.screen.blit(self.surface, self.graphic_rect)
     
     def full_cell_check(self):
-        if self.x == round(self.offset[0], 3) and self.y == round(self.offset[1], 3):  # on a full cell
+        if self.x == round(self.offset[0], 3) and self.y == round(self.offset[1], 3):
             self.full_cell_routine()
     
     def full_cell_routine(self):
@@ -70,34 +72,42 @@ class Entity:
                         [self.x + self.direction_vector[0]] == 1)
 
     def move(self):
-        self.offset[0] += self.vector_speed[0]
-        self.offset[1] += self.vector_speed[1]
+        self.offset[0] += self.speed_vector[0]
+        self.offset[1] += self.speed_vector[1]
 
     def update_position(self):
         self.x = round(self.offset[0])
         self.y = round(self.offset[1])
 
     def direction_update(self, new_direction):
-        self.direction_vector = new_direction
-        self.direction = Entity.direction_vector_to_direction[self.direction_vector]
-        self.vector_speed = tuple(self.scalar_speed * x for x in self.direction_vector)
+        self.direction_vector: tuple[int] = new_direction
+        self.direction: str = Entity.direction_conversion[self.direction_vector]
+        self.speed_vector: tuple[float] = tuple(self.speed_scalar * i for i in self.direction_vector)
         self.sprite_update()
 
     def sprite_update(self):
         self.sprites = itertools.cycle(self.sprite_cycle())
-        self.next_sprite()
+        self.sprite_next()
 
     def sprite_cycle(self):
         raise NotImplementedError
 
-    def next_sprite(self):
-        self.surface = next(self.sprites)
+    def sprite_next(self):
+        if any(self.speed_vector):
+            self.surface = next(self.sprites)
 
 class Player(Entity):
     def __init__(self, x: int, y: int, speed: int, direction: str, name: str) -> None:
         super().__init__(x, y, speed, direction, name)
         self.input: tuple[int | float] | None = None
     
+    def full_cell_routine(self):
+        self.input_handling()
+        self.tunnel_warp()
+        self.wall_handling()
+        self.ghost_collision()
+    
+
     def input_assignement(self, input):
         self.input = {
             pygame.K_UP: (0, -1),
@@ -106,19 +116,13 @@ class Player(Entity):
             pygame.K_RIGHT: (1, 0),
         }[input]
     
-    def full_cell_routine(self):
-        self.input_handling()
-        self.tunnel_warp()
-        self.wall_handling()
-        self.ghost_collision()
-    
     def input_is_real(self):
         return self.input is not None and self.direction_vector != self.input
     
     def input_is_accessible(self): # cell to turn to isn't a wall
         return map_grid[self.y + self.input[1]][self.x + self.input[0]] != 1
         
-    def input_is_valid(self):
+    def input_is_valid(self) -> bool:
         return (self.input_is_real() and 
                 self.input_is_accessible() and 
                 self.x in range(0, 27))
@@ -128,10 +132,10 @@ class Player(Entity):
             self.direction_update(self.input)
             self.input = None
     
+
     def wall_handling(self):
         if self.wall_ahead():
-            self.vector_speed = (0, 0)
-            # TODO stop sprite
+            self.speed_vector = (0, 0)
     
     def ghost_collision(self):
         for entity in Ennemy.ennemies:
@@ -153,7 +157,6 @@ class Ennemy(Entity):
                  name: str, color: tuple[int], scatter_target, chase_target) -> None:
         
         self.color = color
-
         super().__init__(x, y, speed, direction, name)
 
         self.scatter_target = {
@@ -170,8 +173,8 @@ class Ennemy(Entity):
             'clyde_target': self.clyde_target,
         }.get(chase_target, 'blinky_targe')
 
-
         Ennemy.ennemies.add(self)
+
 
     def full_cell_routine(self):
         self.player_collision()
@@ -179,7 +182,7 @@ class Ennemy(Entity):
         self.tunnel_warp()
 
     def player_collision(self):
-        if self.graphic_rect.colliderect(pak.graphic_rect):
+        if self.x == pak.x and self.y == pak.y:
             print(f'Game over, {self.name.capitalize()} got you')  # maybe TODO game over screen
             sys.exit()
     
@@ -189,6 +192,7 @@ class Ennemy(Entity):
         else:
             self.wall_handling()
     
+
     def next_move_A_star(self):  # maybe TODO A* tunnel consideration
         x, y = pathing.A_star((self.x, self.y), self.target_selection(), self.no_backtrack(map_grid), (1, 3))[1]
         self.direction_update((x - self.x, y - self.y))
@@ -232,6 +236,7 @@ class Ennemy(Entity):
                                                    pak.y + 2 * pak.direction_vector[1])))
         s.screen.blit(circle_surface, tuple(i * s.cu for i in self.target_selection()))
 
+
     def no_backtrack(self, array: list[list[int]]):
         temp_array = copy.deepcopy(array)
         temp_array[self.y - self.direction_vector[1]][self.x - self.direction_vector[0]] = 1
@@ -253,13 +258,14 @@ class Ennemy(Entity):
     def turn_around(self):
         self.direction_update(tuple(-x for x in self.direction_vector))
     
+    
     def sprite_cycle(self):
         return (
-            self.create_sprite(sprite_number)
+            self.sprite_assembly(sprite_number)
             for sprite_number in (0, 1)
         )
     
-    def create_sprite(self, sprite_number):
+    def sprite_assembly(self, sprite_number):
         sprite = pygame.image.load(f'image_files\ghost_body_{sprite_number}.png')
         sprite.fill(self.color, special_flags=pygame.BLEND_MULT)
         sprite.blit(
@@ -269,7 +275,7 @@ class Ennemy(Entity):
         return sprite
             
 
-pak = Player(14, 23, 1/6, 'left', 'pac')
+pak = Player(14, 17, 1/6, 'left', 'pac')
 
 blinky = Ennemy(17, 23, 1/8, 'left', 'blinky', s.red, 'up-right', 'blinky_target')
 inky = Ennemy(22, 14, 1/8, 'right', 'inky', s.cyan, 'down-right', 'inky_target')
