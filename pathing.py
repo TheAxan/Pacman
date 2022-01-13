@@ -68,7 +68,7 @@ def A_star(start_node: coordinates, end_node: coordinates,
     return path
 
 
-def breadth_first_map(array, start_node, wall_values: tuple[int] = 1):
+def breadth_first_map(array, start_node, wall_values: tuple[int] = (1,)):
     """Explores an array
 
     Args:
