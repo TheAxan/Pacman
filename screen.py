@@ -31,12 +31,12 @@ orange = 255, 153, 0
 cyan = 0, 230, 230
 pink = 255, 179, 255
 
-square = pygame.Surface((cu, cu))
+
+square = pygame.Surface((cu/8, cu/8))
 square.fill(blue)
-pygame.draw.rect(square, black, (0, 0, cu, cu), (cu//8)*6)
 
 background = pygame.Surface((map_width * cu, map_height * cu))
-for y_counter, row in enumerate(map_grid):
+for y_counter, row in enumerate(map.walls):
     for x_counter, cell in enumerate(row):
         if cell == 1:
-            background.blit(square, (x_counter * cu, y_counter * cu)) # This draws the map
+            background.blit(square, (x_counter * cu + cu/2, y_counter * cu + cu/2)) # This draws the map
