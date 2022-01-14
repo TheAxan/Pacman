@@ -1,10 +1,10 @@
 import pygame
 import pathing
-import sys
 import copy
 import itertools
+import settings
 import screen as s
-from maps import default_map as map_grid
+from maps import default_map as map
 
 
 
@@ -68,7 +68,7 @@ class Entity:
                 self.offset[0] = -1
     
     def wall_ahead(self) -> bool:
-        return (map_grid[self.y + self.direction_vector[1]]
+        return (map.walls[self.y + self.direction_vector[1]]
                         [self.x + self.direction_vector[0]] == 1)
 
     def move(self):
@@ -106,6 +106,7 @@ class Player(Entity):
         self.tunnel_warp()
         self.wall_handling()
         self.ghost_collision()
+        self.pellet_handling()
     
 
     def input_assignement(self, input):
@@ -120,7 +121,7 @@ class Player(Entity):
         return self.input is not None and self.direction_vector != self.input
     
     def input_is_accessible(self): # cell to turn to isn't a wall
-        return map_grid[self.y + self.input[1]][self.x + self.input[0]] != 1
+        return map.walls[self.y + self.input[1]][self.x + self.input[0]] != 1
         
     def input_is_valid(self) -> bool:
         return (self.input_is_real() and 
@@ -147,11 +148,25 @@ class Player(Entity):
             for sprite_number in (0, 1, 2, 1)
         )
     
+    def pellet(self):
+        return map.points[self.y][self.x]
+            
+    def pellet_handling(self):
+        if self.pellet():
+            if self.pellet == 2:
+                self.power_pellet_handling()
+            map.remove_point(self.x, self.y)
+    
+    def power_pellet_handling(self):
+        raise NotImplementedError
+
+        
 
 class Ennemy(Entity):
 
     chase_mode: bool = False
     ennemies: set[object] = set()
+    game_over: bool = False
     
     def __init__(self, x: int, y: int, speed: int, direction: str, 
                  name: str, color: tuple[int], scatter_target, chase_target) -> None:
@@ -161,9 +176,9 @@ class Ennemy(Entity):
 
         self.scatter_target = {
             'up-left': (0, 0),
-            'up-right': (len(map_grid[0]) - 1, 0),
-            'down-left': (0, len(map_grid) -1 ),
-            'down-right': (len(map_grid[0]) -1, len(map_grid) -1),
+            'up-right': (len(map.walls[0]) - 1, 0),
+            'down-left': (0, len(map.walls) -1 ),
+            'down-right': (len(map.walls[0]) -1, len(map.walls) -1),
         }.get(scatter_target, 'up-left')
         
         self.chase_target = {
@@ -184,21 +199,21 @@ class Ennemy(Entity):
     def player_collision(self):
         if self.x == pak.x and self.y == pak.y:
             print(f'Game over, {self.name.capitalize()} got you')  # maybe TODO game over screen
-            sys.exit()
+            Ennemy.game_over = True
     
     def intersection_check(self):
-        if map_grid[self.y][self.x] == 2:
+        if map.walls[self.y][self.x] == 2:
             self.next_move_triangulation()
         else:
             self.wall_handling()
     
 
     def next_move_A_star(self):  # maybe TODO A* tunnel consideration
-        x, y = pathing.A_star((self.x, self.y), self.target_selection(), self.no_backtrack(map_grid), (1, 3))[1]
+        x, y = pathing.A_star((self.x, self.y), self.target_selection(), self.no_backtrack(map.walls), (1, 3))[1]
         self.direction_update((x - self.x, y - self.y))
 
     def next_move_triangulation(self):
-        x, y = pathing.triangulation((self.x, self.y), self.target_selection(), self.no_backtrack(map_grid), (1, 3))
+        x, y = pathing.triangulation((self.x, self.y), self.target_selection(), self.no_backtrack(map.walls), (1, 3))
         self.direction_update((x - self.x, y - self.y))
 
     def target_selection(self):
@@ -245,12 +260,12 @@ class Ennemy(Entity):
     def wall_handling(self):
         if self.wall_ahead():
             if self.direction_vector[0] == 0:
-                if map_grid[self.y][self.x + 1] == 1:
+                if map.walls[self.y][self.x + 1] == 1:
                     self.direction_update((-1, 0))
                 else:
                     self.direction_update((1, 0))
             elif self.direction_vector[1] == 0:
-                if map_grid[self.y + 1][self.x] == 1:
+                if map.walls[self.y + 1][self.x] == 1:
                     self.direction_update((0, -1))
                 else:
                     self.direction_update((0, 1))
@@ -277,7 +292,7 @@ class Ennemy(Entity):
 
 pak = Player(14, 17, 1/6, 'left', 'pac')
 
-blinky = Ennemy(17, 23, 1/8, 'left', 'blinky', s.red, 'up-right', 'blinky_target')
-inky = Ennemy(22, 14, 1/8, 'right', 'inky', s.cyan, 'down-right', 'inky_target')
-pinky = Ennemy(16, 29, 1/8, 'right', 'pinky', s.pink, 'up-left', 'pinky_target')
-clyde = Ennemy(21, 13, 1/8, 'up', 'clyde', s.orange, 'down-left', 'clyde_target')
+blinky = Ennemy(17, 23, 1/8, 'left', 'blinky', settings.red, 'up-right', 'blinky_target')
+inky = Ennemy(22, 14, 1/8, 'right', 'inky', settings.cyan, 'down-right', 'inky_target')
+pinky = Ennemy(16, 29, 1/8, 'right', 'pinky', settings.pink, 'up-left', 'pinky_target')
+clyde = Ennemy(21, 13, 1/8, 'up', 'clyde', settings.orange, 'down-left', 'clyde_target')
