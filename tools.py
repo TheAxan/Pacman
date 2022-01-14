@@ -35,7 +35,7 @@ original_map = [  # 0 is empty, 1 is a wall, 2 is a turning point
 ]
 
 
-def unreachable_mapper(array, start_node):
+def unreachable_mapper(array, start_node: tuple[int] = (1,1)):
     grid_map = pathing.breadth_first_map(array, start_node)
     return [
         [
@@ -73,3 +73,12 @@ def print_array(array):
 def empty_array(width, height):
     return [[0] * width for _ in range(height)]
 
+def points_mapper(array):
+    return [
+        [
+            1 if cell == 0
+            else 0
+            for cell in row
+        ]
+        for row in array
+    ]
