@@ -1,15 +1,12 @@
 import pygame
 import sys
+import settings
 import screen
 import classes
 
 
 pygame.init()
 
-display_targets: bool = False
-
-chase_duration: int = 20000
-scatter_duration: int = 7000
 
 timer: int = 0
 clock = pygame.time.Clock()
@@ -47,7 +44,7 @@ while True:
     for entity in classes.Entity.entities:
         entity.routine()
     
-    if display_targets:
+    if settings.display_targets:
         for entity in classes.Ennemy.ennemies:
             entity.target_display()
     
@@ -57,6 +54,6 @@ while True:
     timer += clock.get_time()
     
     if classes.Ennemy.chase_mode:
-        chase_switch(chase_duration)
+        chase_switch(settings.chase_duration)
     else:
-        chase_switch(scatter_duration)
+        chase_switch(settings.scatter_duration)
