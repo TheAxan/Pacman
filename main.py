@@ -1,15 +1,13 @@
 import pygame
 import sys
+import settings
 import screen
 import classes
+import maps
 
 
 pygame.init()
 
-display_targets: bool = False
-
-chase_duration: int = 20000
-scatter_duration: int = 7000
 
 timer: int = 0
 clock = pygame.time.Clock()
@@ -18,6 +16,9 @@ sprite_update = pygame.event.custom_type()
 pygame.time.set_timer(sprite_update, 100)
 
 pygame.key.set_repeat(15)
+
+point_count: int = -settings.pellet_value
+ate_pellet = pygame.event.custom_type()
 
 def chase_switch(duration):
     global timer
@@ -44,19 +45,29 @@ while True:
 
     screen.screen.blit(screen.background, (0, 0))  # reset background
 
+    if maps.default_map.modified:
+        maps.default_map.sprite_update()
+        point_count += settings.pellet_value
+    
+    if classes.Ennemy.game_over:
+        print(f'Score: {point_count}')
+        sys.exit()
+    
+    maps.default_map.graphic_update()
+
     for entity in classes.Entity.entities:
         entity.routine()
     
-    if display_targets:
+    if settings.display_targets:
         for entity in classes.Ennemy.ennemies:
             entity.target_display()
-    
+
     pygame.display.flip()
 
     clock.tick(60)
     timer += clock.get_time()
     
     if classes.Ennemy.chase_mode:
-        chase_switch(chase_duration)
+        chase_switch(settings.chase_duration)
     else:
-        chase_switch(scatter_duration)
+        chase_switch(settings.scatter_duration)
