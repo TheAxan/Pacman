@@ -82,3 +82,40 @@ def points_mapper(array):
         ]
         for row in array
     ]
+
+def wall_type_check(center_node, array):
+    neighbors_dict = pathing.neighbor_values(center_node, array)
+    if array[center_node[1]][center_node[0]] in (0, 2):
+        return 0
+    match (neighbors_dict['left'], neighbors_dict['up'], neighbors_dict['right'], neighbors_dict['down']):
+        case (1, 1, 1, 1):
+            return 0
+            # TODO literal corner cases
+        case (1, 0, 1, 1):
+            return 1
+        case (1, 0, 0, 1):
+            return 2
+        case (1, 1, 0, 1):
+            return 3
+        case (1, 1, 0, 0):
+            return 4
+        case (1, 1, 1, 0):
+            return 5
+        case (0, 1, 1, 0):
+            return 6
+        case (0, 1, 1, 1):
+            return 7
+        case (0, 0, 1, 1):
+            return 8
+        case (0, 1, 0, 1):
+            raise NotImplementedError
+            return 9
+        case (1, 0, 1, 0):
+            raise NotImplementedError
+            return 10
+        case (0, 0, 0, 0):
+            raise NotImplementedError
+            return 11
+        # TODO single wall cases
+        # TODO divide into side wall cases, outer corner, 3/2/1 inner corners, alternate 2 inner corners, cross inner corner, void wall, center wall, wall end 
+        

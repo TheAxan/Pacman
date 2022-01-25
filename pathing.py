@@ -36,9 +36,9 @@ def neighbor_values(center_node: tuple[int], array: list[list[int]]) -> set:
     neighbors_dict = dict()
     for i, j, d in ((x-1, y, 'left'), (x, y-1, 'up'), (x+1, y, 'right'), (x, y+1, 'down')):
         try:
-            neighbors_dict[d] = (array[j][i] == 1)
+            neighbors_dict[d] = (array[j][i] in (1, 4))
         except:
-            pass
+            neighbors_dict[d] = 1
     return neighbors_dict
 
 
