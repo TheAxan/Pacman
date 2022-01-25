@@ -119,3 +119,11 @@ def wall_type_check(center_node, array):
         # TODO single wall cases
         # TODO divide into side wall cases, outer corner, 3/2/1 inner corners, alternate 2 inner corners, cross inner corner, void wall, center wall, wall end 
         
+def wall_type_mapper(array):
+    return [
+        [
+            wall_type_check((x, y), array)
+            for x in range(len(array[0]))
+        ]
+        for y in range(len(array))
+    ]
