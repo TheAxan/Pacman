@@ -89,8 +89,7 @@ def wall_type_check(center_node, array):
         return 0
     match (neighbors_dict['left'], neighbors_dict['up'], neighbors_dict['right'], neighbors_dict['down']):
         case (1, 1, 1, 1):
-            return 0
-            # TODO literal corner cases
+            return corner_type_check(center_node, array)
         case (1, 0, 1, 1):
             return 1
         case (1, 0, 0, 1):
@@ -107,18 +106,26 @@ def wall_type_check(center_node, array):
             return 7
         case (0, 0, 1, 1):
             return 8
-        case (0, 1, 0, 1):
+        case  _:
             raise NotImplementedError
-            return 9
-        case (1, 0, 1, 0):
-            raise NotImplementedError
+
+
+def corner_type_check(center_node, array):
+    neighbors_dict = pathing.neighbor_values(center_node, array, True)
+    match (neighbors_dict['up left'], neighbors_dict['up right'], neighbors_dict['down right'], neighbors_dict['down left']):
+        case (1, 1, 1, 1):
+            return 0
+        case (0, 1, 1, 1):
             return 10
-        case (0, 0, 0, 0):
-            raise NotImplementedError
+        case (1, 0, 1, 1):
             return 11
-        # TODO single wall cases
-        # TODO divide into side wall cases, outer corner, 3/2/1 inner corners, alternate 2 inner corners, cross inner corner, void wall, center wall, wall end 
-        
+        case (1, 1, 0, 1):
+            return 12
+        case (1, 1, 1, 0):
+            return 13
+        case _:
+            raise NotImplementedError
+
 def wall_type_mapper(array):
     """Generates an array based on the cells' neighbors in an input array
 
