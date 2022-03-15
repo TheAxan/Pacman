@@ -120,6 +120,14 @@ def wall_type_check(center_node, array):
         # TODO divide into side wall cases, outer corner, 3/2/1 inner corners, alternate 2 inner corners, cross inner corner, void wall, center wall, wall end 
         
 def wall_type_mapper(array):
+    """Generates an array based on the cells' neighbors in an input array
+
+    Args:
+        array : Input array *Inner walls must be 2 thick*
+
+    Returns:
+        list(list): Array filled with values corresponding to the type of wall
+    """
     return [
         [
             wall_type_check((x, y), array)
