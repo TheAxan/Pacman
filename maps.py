@@ -1,13 +1,19 @@
 import pygame
 import settings
-# 0 is empty, 1 is a wall, 2 is a turning point, 3 is a wall corner, 4 is an unreachable cell
+import tools
 # in python 3.9 my tests showed list access to be much faster than tuple acces, in 3.8 tuples were slightly faster
 
 
 class Map():
-    def __init__(self, walls_map, point_map) -> None:
-        self.walls: list[list[int]] = walls_map
+    def __init__(self, walls_map, point_map, wall_type_map = None) -> None:
+        self.walls: list[list[int]] = walls_map # 0 is empty, 1 is a wall, 2 is a turning point, 3 is a wall corner, 4 is an unreachable cell
         self.points: list[list[int]] = point_map
+        
+        if wall_type_map is None: 
+            self.wall_types: list[list[int]] = tools.wall_type_mapper(tools.unreachable_mapper(walls_map))
+        else: # The map can be pre-calculated
+            self.wall_types: list[list[int]] = wall_type_map
+        
         self.modified: bool = True
         self.width = len(walls_map[0])
         self.height = len(walls_map)
