@@ -1,13 +1,19 @@
 import pygame
 import settings
-# 0 is empty, 1 is a wall, 2 is a turning point, 3 is a wall corner, 4 is an unreachable cell
+import tools
 # in python 3.9 my tests showed list access to be much faster than tuple acces, in 3.8 tuples were slightly faster
 
 
 class Map():
-    def __init__(self, walls_map, point_map) -> None:
-        self.walls: list[list[int]] = walls_map
+    def __init__(self, walls_map, point_map, wall_type_map = None) -> None:
+        self.walls: list[list[int]] = walls_map # 0 is empty, 1 is a wall, 2 is a turning point, 3 is a wall corner, 4 is an unreachable cell
         self.points: list[list[int]] = point_map
+        
+        if wall_type_map is None: 
+            self.wall_types: list[list[int]] = tools.wall_type_mapper(tools.unreachable_mapper(walls_map))
+        else: # The map can be pre-calculated
+            self.wall_types: list[list[int]] = wall_type_map
+        
         self.modified: bool = True
         self.width = len(walls_map[0])
         self.height = len(walls_map)
@@ -17,18 +23,18 @@ class Map():
         self.modified = True
     
     def sprite_update(self):
-        square = pygame.Surface((settings.cell_unit/8, settings.cell_unit/8))
-        square.fill(settings.yellow)
+        dot = pygame.image.load('image_files\dot.png')
 
         self.modified = False
 
         self.sprite = pygame.Surface((self.width * settings.cell_unit, self.height * settings.cell_unit))
         self.sprite.fill((0,0,0,0))
         self.sprite.set_colorkey((0,0,0,0))
+
         for y_counter, row in enumerate(self.points):
             for x_counter, cell in enumerate(row):
                 if cell == 1:
-                    self.sprite.blit(square, (x_counter * settings.cell_unit + settings.cell_unit/2, y_counter * settings.cell_unit + settings.cell_unit/2)) # This draws the pellets
+                    self.sprite.blit(dot, (x_counter * settings.cell_unit, y_counter * settings.cell_unit)) # This draws the pellets
     
     def graphic_update(self):
         import screen

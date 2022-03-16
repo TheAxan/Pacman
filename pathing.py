@@ -22,6 +22,31 @@ def neighbors(center_node: tuple[int], array: list[list[int]], excluded_values: 
             pass
     return neighbors_set
 
+def neighbor_values(center_node: tuple[int], array: list[list[int]], diagonal: bool = False) -> dict:
+    """Identify walls around a node.
+
+    Args:
+        center_node (tuple[int]): The node whose neighbors are to be returned.
+        array (list[list[int]]): The array in which the nodes are.
+
+    Returns:
+        dict: A dict indicating whether a direction has a wall.
+    """
+    x, y = center_node
+    neighbors_dict = dict()
+    if diagonal:
+        nodes_to_identify = ((x-1, y-1, 'up left'), (x+1, y-1, 'up right'), (x+1, y+1, 'down right'), (x-1, y+1, 'down left'))
+    else:
+        nodes_to_identify = ((x-1, y, 'left'), (x, y-1, 'up'), (x+1, y, 'right'), (x, y+1, 'down'))
+    
+    for i, j, d in nodes_to_identify:
+        try:
+            neighbors_dict[d] = (array[j][i] in (1, 4))
+        except:
+            neighbors_dict[d] = 1
+
+    return neighbors_dict
+
 
 def heuristic_cost(a, b):
     return abs(a[0] - b[0]) + abs(a[1] - b[1])

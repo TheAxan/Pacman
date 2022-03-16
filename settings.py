@@ -18,3 +18,5 @@ scatter_duration: int = 7000
 chase_duration: int = 20000
 
 pellet_value = 10
+
+selected_map = "default_map"
