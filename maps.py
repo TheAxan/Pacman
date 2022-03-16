@@ -23,18 +23,18 @@ class Map():
         self.modified = True
     
     def sprite_update(self):
-        square = pygame.Surface((settings.cell_unit/8, settings.cell_unit/8))
-        square.fill(settings.yellow)
+        dot = pygame.image.load('image_files\dot.png')
 
         self.modified = False
 
         self.sprite = pygame.Surface((self.width * settings.cell_unit, self.height * settings.cell_unit))
         self.sprite.fill((0,0,0,0))
         self.sprite.set_colorkey((0,0,0,0))
+
         for y_counter, row in enumerate(self.points):
             for x_counter, cell in enumerate(row):
                 if cell == 1:
-                    self.sprite.blit(square, (x_counter * settings.cell_unit + settings.cell_unit/2, y_counter * settings.cell_unit + settings.cell_unit/2)) # This draws the pellets
+                    self.sprite.blit(dot, (x_counter * settings.cell_unit, y_counter * settings.cell_unit)) # This draws the pellets
     
     def graphic_update(self):
         import screen
