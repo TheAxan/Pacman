@@ -242,7 +242,7 @@ class Ennemy(Entity):
     
     def target_display(self):
         circle_surface = pygame.Surface((s.cu, s.cu))
-        circle_surface.set_colorkey(s.black)
+        circle_surface.set_colorkey(settings.black)
         pygame.draw.circle(circle_surface, self.surface.get_at(self.surface.get_rect().center), 
                            (s.cu/2, s.cu/2), s.cu/3)
         if self.chase_target == inky.inky_target:
